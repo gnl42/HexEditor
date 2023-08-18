@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/me.glindholm.eclipse.plugin.javahexeditor2.standalone/src/net/sourceforge/javahexeditor/standalone/HexEditor.java"/>
+<listEntry value="/me.glindholm.eclipse.plugin.javahexeditor2.plugin/src/me/glindholm/eclipse/plugin/javahexeditor/standalone/HexEditor.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>

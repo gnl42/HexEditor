@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="javahexeditor2.feature_0.6.0.qualifier.jar" id="javahexeditor2.feature" version="0.6.0.qualifier">
+   <feature url="me.glindholm.eclipse.plugin.javahexeditor2.feature_0.6.0.qualifier.jar" id="me.glindholm.eclipse.plugin.javahexeditor2.feature" version="0.6.0.qualifier">
       <category name="Java Hex Editor"/>
    </feature>
-   <feature url="javahexeditor2.feature.source_0.6.0.qualifier.jar" id="javahexeditor2.feature.source" version="0.6.0.qualifier">
+   <feature url="me.glindholm.eclipse.plugin.javahexeditor2.feature.source_0.6.0.qualifier.jar" id="me.glindholm.eclipse.plugin.javahexeditor2.feature.source" version="0.6.0.qualifier">
       <category name="Java Hex Editor Source"/>
    </feature>
    <category-def name="Java Hex Editor" label="Java Hex Editor">

@@ -7,10 +7,10 @@
 		<artifactId>javahexeditor2</artifactId>
 		<version>0.6.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>javahexeditor2.product</artifactId>
+	<artifactId>me.glindholm.eclipse.plugin.javahexeditor2.product</artifactId>
 	<packaging>eclipse-repository</packaging>
 	<properties>
-		<product-id>javahexeditor2.product</product-id>
+		<product-id>me.glindholm.eclipse.plugin.javahexeditor2.product</product-id>
 	</properties>
 	<build>
 		<plugins>
