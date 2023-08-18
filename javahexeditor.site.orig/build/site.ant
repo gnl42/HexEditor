@@ -2,7 +2,7 @@
 
 	<target name="_init">
 		<property name="year" value="2020" />
-		<property name="release" value="0.5.2" />
+		<property name="release" value="0.6.0" />
 		<echo message="${basedir}" />
 		<property name="buildFolder" value="build" />
 		<property name="updateFolder" value="update" />

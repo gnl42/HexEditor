@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Hex Editor
-Bundle-SymbolicName: net.sourceforge.javahexeditor.plugin;singleton:=true
-Bundle-Version: 0.5.2.qualifier
-Bundle-Activator: net.sourceforge.javahexeditor.plugin.HexEditorPlugin
+Bundle-SymbolicName: me.glindholm.eclipse.plugin.javahexeditor2.plugin;singleton:=true
+Bundle-Version: 0.6.0.qualifier
+Bundle-Activator: me.glindholm.eclipse.plugin.javahexeditor2.plugin.HexEditorPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -15,19 +15,19 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.filesystem
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Jordi Bergenthal, Peter Dell, Andrey Loskutov
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Automatic-Module-Name: net.sourceforge.javahexeditor
-Export-Package: net.sourceforge.javahexeditor.plugin;
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: me.glindholm.eclipse.plugin.javahexeditor2
+Export-Package: me.glindholm.eclipse.plugin.javahexeditor2.plugin;
   uses:="org.osgi.framework,
-   net.sourceforge.javahexeditor.common,
-   net.sourceforge.javahexeditor,
+   me.glindholm.eclipse.plugin.javahexeditor2.common,
+   me.glindholm.eclipse.plugin.javahexeditor2,
    org.eclipse.ui.plugin",
- net.sourceforge.javahexeditor.plugin.actions;uses:="org.eclipse.ui,org.eclipse.jface.action,org.eclipse.jface.viewers",
- net.sourceforge.javahexeditor.plugin.editors;
+ me.glindholm.eclipse.plugin.javahexeditor2.plugin.actions;uses:="org.eclipse.ui,org.eclipse.jface.action,org.eclipse.jface.viewers",
+ me.glindholm.eclipse.plugin.javahexeditor2.plugin.editors;
   uses:="org.eclipse.jface.action,
    org.eclipse.swt.graphics,
    org.eclipse.swt.widgets,
-   net.sourceforge.javahexeditor,
+   me.glindholm.eclipse.plugin.javahexeditor2,
    org.eclipse.jface.viewers,
    org.eclipse.ui,
    org.eclipse.core.runtime,
@@ -35,4 +35,4 @@ Export-Package: net.sourceforge.javahexeditor.plugin;
    org.eclipse.ui.views.contentoutline,
    org.eclipse.ui.part"
 Bundle-ClassPath: .,
- lib/net.sourceforge.javahexeditor.jar
+ lib/me.glindholm.eclipse.plugin.javahexeditor2.jar

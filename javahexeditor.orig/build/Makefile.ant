@@ -3,7 +3,7 @@
 <project name="Java Hex Editor" basedir=".." default="create_libraries">
 
 	<target name="create_libraries" description="Create Jar file">
-		<property name="jarFileName" value="net.sourceforge.javahexeditor.jar" />
+		<property name="jarFileName" value="me.glindholm.eclipse.plugin.javahexeditor2.jar" />
 		<property name="jarFileStandalonePath" location="../javahexeditor.standalone/lib/${jarFileName}" />
 		<property name="jarFilePluginPath" location="../javahexeditor.plugin/lib/${jarFileName}" />
 		<echo>Creating ${jarFileStandalonePath}</echo>

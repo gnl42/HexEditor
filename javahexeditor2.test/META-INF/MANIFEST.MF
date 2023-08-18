@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: javahexeditor2.test
+Bundle-Vendor: javahexeditor2
+Bundle-SymbolicName: javahexeditor2.test
+Bundle-Version: 0.6.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Bundle: junit-jupiter-api
+Automatic-Module-Name: javahexeditor2.test

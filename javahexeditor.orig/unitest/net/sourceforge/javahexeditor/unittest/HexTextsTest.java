@@ -1,4 +1,4 @@
-package net.sourceforge.javahexeditor.unittest;
+package me.glindholm.eclipse.plugin.javahexeditor2.unittest;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import junit.framework.TestCase;
-import net.sourceforge.javahexeditor.BinaryContent;
-import net.sourceforge.javahexeditor.HexTexts;
+import me.glindholm.eclipse.plugin.javahexeditor2.BinaryContent;
+import me.glindholm.eclipse.plugin.javahexeditor2.HexTexts;
 
 public final class HexTextsTest extends TestCase {
 
@@ -42,7 +42,7 @@ public final class HexTextsTest extends TestCase {
 
 	/*
 	 * Test method for
-	 * 'net.sourceforge.javahexeditor.HexTexts.mergeRanges(ArrayList, int)'
+	 * 'me.glindholm.eclipse.plugin.javahexeditor2.HexTexts.mergeRanges(ArrayList, int)'
 	 */
 	public void testMergeRanges() {
 		List<Long> changes = new ArrayList<Long>();

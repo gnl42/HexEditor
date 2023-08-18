@@ -18,7 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package net.sourceforge.javahexeditor.unittest;
+package me.glindholm.eclipse.plugin.javahexeditor2.unittest;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.io.RandomAccessFile;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.sourceforge.javahexeditor.RandomAccessFileFactory;
+import me.glindholm.eclipse.plugin.javahexeditor2.RandomAccessFileFactory;
 
 public class AllTests {
 
@@ -59,7 +59,7 @@ public class AllTests {
 	}
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for net.sourceforge.javahexeditor");
+		TestSuite suite = new TestSuite("Test for me.glindholm.eclipse.plugin.javahexeditor2");
 
 		// Note: gcj 4.4.0 won't let to memory-map twice the same file in the same
 		// virtual machine.

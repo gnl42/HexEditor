@@ -18,15 +18,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package net.sourceforge.javahexeditor.unittest;
+package me.glindholm.eclipse.plugin.javahexeditor2.unittest;
 
 import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-import net.sourceforge.javahexeditor.BinaryContent;
-import net.sourceforge.javahexeditor.BinaryContentFinder;
-import net.sourceforge.javahexeditor.BinaryContentFinder.Match;
+import me.glindholm.eclipse.plugin.javahexeditor2.BinaryContent;
+import me.glindholm.eclipse.plugin.javahexeditor2.BinaryContentFinder;
+import me.glindholm.eclipse.plugin.javahexeditor2.BinaryContentFinder.Match;
 
 public final class FinderTest extends TestCase {
 
@@ -98,7 +98,7 @@ public final class FinderTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'net.sourceforge.javahexeditor.Find.getNextMatch()'
+	 * Test method for 'me.glindholm.eclipse.plugin.javahexeditor2.Find.getNextMatch()'
 	 */
 	public void testGetNextMatch() {
 

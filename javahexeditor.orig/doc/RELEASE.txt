@@ -29,7 +29,7 @@ See https://javahexeditor.sourceforge.io.
 javahexeditor change log
 ------------------------
 
-10/08/2020 version 0.5.2.
+10/08/2020 version 0.6.0.
     See src/index.html for changes from now on.
 
 26/11/2017 version 0.5.1.

@@ -18,7 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package net.sourceforge.javahexeditor.standalone;
+package me.glindholm.eclipse.plugin.javahexeditor2.standalone;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -57,13 +57,13 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import net.sourceforge.javahexeditor.FileToucher;
-import net.sourceforge.javahexeditor.HelpResources;
-import net.sourceforge.javahexeditor.Manager;
-import net.sourceforge.javahexeditor.PreferencesManager;
-import net.sourceforge.javahexeditor.common.SWTUtility;
-import net.sourceforge.javahexeditor.common.TextUtility;
-import net.sourceforge.javahexeditor.standalone.HexEditorMenu.Actions;
+import me.glindholm.eclipse.plugin.javahexeditor2.FileToucher;
+import me.glindholm.eclipse.plugin.javahexeditor2.HelpResources;
+import me.glindholm.eclipse.plugin.javahexeditor2.Manager;
+import me.glindholm.eclipse.plugin.javahexeditor2.PreferencesManager;
+import me.glindholm.eclipse.plugin.javahexeditor2.common.SWTUtility;
+import me.glindholm.eclipse.plugin.javahexeditor2.common.TextUtility;
+import me.glindholm.eclipse.plugin.javahexeditor2.standalone.HexEditorMenu.Actions;
 
 /**
  * Stand-alone wrapper for the Hex Editor. The stand-alone version is compiled

@@ -19,7 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package net.sourceforge.javahexeditor.standalone;
+package me.glindholm.eclipse.plugin.javahexeditor2.standalone;
 
 import org.eclipse.osgi.util.NLS;
 

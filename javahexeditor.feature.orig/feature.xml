@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="net.sourceforge.javahexeditor"
+      id="me.glindholm.eclipse.plugin.javahexeditor2"
       label="Java Hex Editor"
-      version="0.5.2.qualifier"
+      version="0.6.0.qualifier"
       provider-name="Jordi Bergenthal, Andre Bossert, Peter Dell, Andrey Loskutov"
-      plugin="net.sourceforge.javahexeditor.plugin">
+      plugin="me.glindholm.eclipse.plugin.javahexeditor2.plugin">
 
    <description url="https://javahexeditor.sourceforge.io">
       A Java Hex Editor Eclipse plugin. Support for very large files. Hex, ASCII and Unicode find. Overwrite/insert modes. Binary and text cut/copy/paste. Undo/redo.
@@ -326,7 +326,7 @@ the &quot;copyright&quot; line and a pointer to where the full notice is found.
    </url>
 
    <plugin
-         id="net.sourceforge.javahexeditor.plugin"
+         id="me.glindholm.eclipse.plugin.javahexeditor2.plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"

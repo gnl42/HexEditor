@@ -18,7 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package net.sourceforge.javahexeditor.standalone;
+package me.glindholm.eclipse.plugin.javahexeditor2.standalone;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,9 +28,9 @@ import java.util.Properties;
 
 import org.eclipse.swt.graphics.FontData;
 
-import net.sourceforge.javahexeditor.Preferences;
-import net.sourceforge.javahexeditor.PreferencesManager;
-import net.sourceforge.javahexeditor.common.SWTUtility;
+import me.glindholm.eclipse.plugin.javahexeditor2.Preferences;
+import me.glindholm.eclipse.plugin.javahexeditor2.PreferencesManager;
+import me.glindholm.eclipse.plugin.javahexeditor2.common.SWTUtility;
 
 final class HexEditorPreferences {
 	public final String PROPERTIES_FILE = "javahexeditor.properties";

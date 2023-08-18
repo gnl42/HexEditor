@@ -18,7 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package net.sourceforge.javahexeditor.standalone;
+package me.glindholm.eclipse.plugin.javahexeditor2.standalone;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -107,7 +107,7 @@ public final class HexEditorMenu {
 		saveMenuItem.setAccelerator(SWT.CONTROL | 'S');
 		saveAsMenuItem = createMenuItem(fileSubMenu, Texts.HEX_EDITOR_SAVE_AS_MENU_ITEM_LABEL, Actions.SAVE_AS);
 		saveSelectionAsMenuItem = createMenuItem(fileSubMenu,
-				net.sourceforge.javahexeditor.Texts.EDITOR_SAVE_SELECTION_AS_MENU_ITEM_LABEL,
+				me.glindholm.eclipse.plugin.javahexeditor2.Texts.EDITOR_SAVE_SELECTION_AS_MENU_ITEM_LABEL,
 				Actions.SAVE_SELECTION_AS);
 		createMenuSeparator(fileSubMenu);
 		createMenuItem(fileSubMenu, Texts.HEX_EDITOR_EXIT_MENU_ITEM_LABEL, Actions.EXIT);
@@ -132,20 +132,20 @@ public final class HexEditorMenu {
 		createMenuSeparator(editSubMenu);
 		pushDelete = createMenuItem(editSubMenu, Texts.HEX_EDITOR_DELETE_MENU_ITEM_LABEL, Actions.DELETE);
 
-		pushTrim = createMenuItem(editSubMenu, net.sourceforge.javahexeditor.Texts.EDITOR_TRIM_MENU_ITEM_LABEL,
+		pushTrim = createMenuItem(editSubMenu, me.glindholm.eclipse.plugin.javahexeditor2.Texts.EDITOR_TRIM_MENU_ITEM_LABEL,
 				Actions.TRIM);
 
 		pushSelectAll = createMenuItem(editSubMenu, Texts.HEX_EDITOR_SELECT_ALL_MENU_ITEM_LABEL, Actions.SELECT_ALL);
 
 		pushSelectBlock = createMenuItem(editSubMenu,
-				net.sourceforge.javahexeditor.Texts.EDITOR_SELECT_BLOCK_MENU_ITEM_LABEL, Actions.SELECT_BLOCK);
+				me.glindholm.eclipse.plugin.javahexeditor2.Texts.EDITOR_SELECT_BLOCK_MENU_ITEM_LABEL, Actions.SELECT_BLOCK);
 		pushSelectBlock.setAccelerator(SWT.CONTROL | 'E');
 
 		createMenuSeparator(editSubMenu);
 		pushFind = createMenuItem(editSubMenu, Texts.HEX_EDITOR_FIND_MENU_ITEM_LABEL, Actions.FIND);
 		pushFind.setAccelerator(SWT.CONTROL | 'F');
 
-		pushGoTo = createMenuItem(editSubMenu, net.sourceforge.javahexeditor.Texts.EDITOR_GO_TO_MENU_ITEM_LABEL,
+		pushGoTo = createMenuItem(editSubMenu, me.glindholm.eclipse.plugin.javahexeditor2.Texts.EDITOR_GO_TO_MENU_ITEM_LABEL,
 				Actions.GO_TO);
 		pushGoTo.setAccelerator(SWT.CONTROL | 'L');
 

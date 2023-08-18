@@ -18,7 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package net.sourceforge.javahexeditor.unittest;
+package me.glindholm.eclipse.plugin.javahexeditor2.unittest;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-import net.sourceforge.javahexeditor.BinaryContent;
+import me.glindholm.eclipse.plugin.javahexeditor2.BinaryContent;
 
 public final class UndoRedoTest extends TestCase {
 
@@ -51,7 +51,7 @@ public final class UndoRedoTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'net.sourceforge.javahexeditor.BinaryContent.delete(long,
+	 * Test method for 'me.glindholm.eclipse.plugin.javahexeditor2.BinaryContent.delete(long,
 	 * long)'
 	 */
 	public void testSingleDelete() {
