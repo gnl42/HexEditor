@@ -33,95 +33,93 @@ import me.glindholm.eclipse.plugin.javahexeditor2.PreferencesManager;
 import me.glindholm.eclipse.plugin.javahexeditor2.common.SWTUtility;
 
 final class HexEditorPreferences {
-	public final String PROPERTIES_FILE = "javahexeditor.properties";
+    public final String PROPERTIES_FILE = "javahexeditor.properties";
 
-	private HexEditor hexEditor;
-	private FontData fontData;
+    private final HexEditor hexEditor;
+    private FontData fontData;
 
-	public HexEditorPreferences(HexEditor hexEditor) {
-		if (hexEditor == null) {
-			throw new IllegalArgumentException("Parameter 'hexEditor' must not be null.");
-		}
-		this.hexEditor = hexEditor;
-		fontData = Preferences.getDefaultFontData();
-	}
+    public HexEditorPreferences(final HexEditor hexEditor) {
+        if (hexEditor == null) {
+            throw new IllegalArgumentException("Parameter 'hexEditor' must not be null.");
+        }
+        this.hexEditor = hexEditor;
+        fontData = Preferences.getDefaultFontData();
+    }
 
-	/**
-	 * Gets the currently active font data.
-	 *
-	 * @return The currently active font data, not <code>null</code>.
-	 */
-	public FontData getFontData() {
-		return fontData;
-	}
+    /**
+     * Gets the currently active font data.
+     *
+     * @return The currently active font data, not <code>null</code>.
+     */
+    public FontData getFontData() {
+        return fontData;
+    }
 
-	/**
-	 * Sets the currently active font data.
-	 *
-	 * @param fontData
-	 *            The currently active font data, not <code>null</code>.
-	 */
-	public void setFontData(FontData fontData) {
-		if (fontData == null) {
-			throw new IllegalArgumentException("Parameter 'fontData' must not be null.");
-		}
-		this.fontData = fontData;
+    /**
+     * Sets the currently active font data.
+     *
+     * @param fontData The currently active font data, not <code>null</code>.
+     */
+    public void setFontData(final FontData fontData) {
+        if (fontData == null) {
+            throw new IllegalArgumentException("Parameter 'fontData' must not be null.");
+        }
+        this.fontData = fontData;
 
-	}
+    }
 
-	public void load() {
+    public void load() {
 
-		Properties properties = new Properties();
-		try {
-			FileInputStream file = new FileInputStream(PROPERTIES_FILE);
-			properties.load(file);
-			file.close();
-		} catch (IOException e) {
-			return;
-		}
+        final Properties properties = new Properties();
+        try {
+            final FileInputStream file = new FileInputStream(PROPERTIES_FILE);
+            properties.load(file);
+            file.close();
+        } catch (final IOException e) {
+            return;
+        }
 
-		String name = properties.getProperty(Preferences.FONT_NAME);
-		if (name == null) {
-			return;
-		}
+        final String name = properties.getProperty(Preferences.FONT_NAME);
+        if (name == null) {
+            return;
+        }
 
-		String styleString = properties.getProperty(Preferences.FONT_STYLE);
-		if (styleString == null) {
-			return;
-		}
-		int style = PreferencesManager.fontStyleToInt(styleString);
+        final String styleString = properties.getProperty(Preferences.FONT_STYLE);
+        if (styleString == null) {
+            return;
+        }
+        final int style = PreferencesManager.fontStyleToInt(styleString);
 
-		int size = 0;
-		try {
-			size = Integer.parseInt(properties.getProperty(Preferences.FONT_SIZE));
-		} catch (NumberFormatException e) {
-			return;
-		}
+        int size = 0;
+        try {
+            size = Integer.parseInt(properties.getProperty(Preferences.FONT_SIZE));
+        } catch (final NumberFormatException e) {
+            return;
+        }
 
-		fontData = new FontData(name, size, style);
-	}
+        fontData = new FontData(name, size, style);
+    }
 
-	public void store() {
-		File propertiesFile = new File(PROPERTIES_FILE);
-		if (fontData == null) {
-			if (propertiesFile.exists()) {
-				propertiesFile.delete();
-			}
-			return;
-		}
+    public void store() {
+        final File propertiesFile = new File(PROPERTIES_FILE);
+        if (fontData == null) {
+            if (propertiesFile.exists()) {
+                propertiesFile.delete();
+            }
+            return;
+        }
 
-		Properties properties = new Properties();
-		properties.setProperty(Preferences.FONT_NAME, fontData.getName());
-		properties.setProperty(Preferences.FONT_STYLE, PreferencesManager.fontStyleToString(fontData.getStyle()));
-		properties.setProperty(Preferences.FONT_SIZE, Integer.toString(fontData.getHeight()));
-		try {
-			FileOutputStream stream = new FileOutputStream(propertiesFile);
-			properties.store(stream, null);
-			stream.close();
-		} catch (IOException ex) {
-			SWTUtility.showErrorMessage(hexEditor.shell, Texts.PREFERENCES_MESSAGE_CANNOT_NOT_WRITE_FILE,
-					propertiesFile.getAbsolutePath(), ex.getMessage());
+        final Properties properties = new Properties();
+        properties.setProperty(Preferences.FONT_NAME, fontData.getName());
+        properties.setProperty(Preferences.FONT_STYLE, PreferencesManager.fontStyleToString(fontData.getStyle()));
+        properties.setProperty(Preferences.FONT_SIZE, Integer.toString(fontData.getHeight()));
+        try {
+            final FileOutputStream stream = new FileOutputStream(propertiesFile);
+            properties.store(stream, null);
+            stream.close();
+        } catch (final IOException ex) {
+            SWTUtility.showErrorMessage(hexEditor.shell, Texts.PREFERENCES_MESSAGE_CANNOT_NOT_WRITE_FILE, propertiesFile.getAbsolutePath(), ex.getMessage());
 
-		}
-	}
+        }
+    }
 }

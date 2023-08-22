@@ -38,12 +38,12 @@ public final class HelpResources {
      *               file system in this case.
      * @return The URI, not <code>null</code>.
      */
-    public static URI getHelpResourceURI(boolean online) {
+    public static URI getHelpResourceURI(final boolean online) {
         URI uri;
         if (online) {
             try {
                 uri = new URI("https://javahexeditor.sourceforge.io");
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 throw new RuntimeException(ex);
             }
         } else {
@@ -67,23 +67,23 @@ public final class HelpResources {
      * @param filePath     The file path or <code>null</code> if the resource path shall be used.
      * @return
      */
-    private static File writeResource(String resourcePath, String filePath) {
+    private static File writeResource(final String resourcePath, String filePath) {
         if (resourcePath == null) {
             throw new IllegalArgumentException("Parameter 'resourcePath' must not be null.");
         }
         if (filePath == null) {
             filePath = resourcePath;
         }
-        InputStream inStream = HelpResources.class.getResourceAsStream(resourcePath);
+        final InputStream inStream = HelpResources.class.getResourceAsStream(resourcePath);
         if (inStream == null) {
             throw new RuntimeException("Help file '" + resourcePath + "' missing in classpath.");
         }
-        File localFolder = new File(System.getProperty("java.io.tmpdir"), "javahexeditor");
-        File localFile = new File(localFolder, filePath);
+        final File localFolder = new File(System.getProperty("java.io.tmpdir"), "javahexeditor");
+        final File localFile = new File(localFolder, filePath);
         localFile.getParentFile().mkdirs();
         try {
-            FileOutputStream outStream = new FileOutputStream(localFile);
-            byte[] buffer = new byte[512];
+            final FileOutputStream outStream = new FileOutputStream(localFile);
+            final byte[] buffer = new byte[512];
             int read = 0;
             try {
                 while ((read = inStream.read(buffer)) > 0) {
@@ -92,12 +92,12 @@ public final class HelpResources {
             } finally {
                 outStream.close();
             }
-        } catch (IOException ignore) {
+        } catch (final IOException ignore) {
             // Open browser anyway
         }
         try {
             inStream.close();
-        } catch (IOException ignore) {
+        } catch (final IOException ignore) {
             // Open browser anyway
         }
         localFile.deleteOnExit();

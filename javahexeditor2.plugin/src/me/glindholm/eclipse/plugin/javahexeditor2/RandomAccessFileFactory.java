@@ -24,7 +24,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Central factory to track creation of RandomAccessFile instance.
@@ -33,11 +34,11 @@ import java.util.*;
  */
 public final class RandomAccessFileFactory {
 
-    private static final List<RandomAccessFile> instances = new ArrayList<RandomAccessFile>(3);
+    private static final List<RandomAccessFile> instances = new ArrayList<>(3);
     private static final boolean debug = false;
 
     public static RandomAccessFile createRandomAccessFile(final File file, final String mode) throws FileNotFoundException {
-        RandomAccessFile raf = new RandomAccessFile(file, mode) {
+        final RandomAccessFile raf = new RandomAccessFile(file, mode) {
             @Override
             public void close() throws IOException {
                 super.close();
@@ -56,14 +57,14 @@ public final class RandomAccessFileFactory {
         return raf;
     }
 
-    public static void log(String message) {
+    public static void log(final String message) {
         if (debug) {
             System.out.println("RandomAccessFileFactory: " + message);
             System.out.flush();
         }
     }
 
-    private static void logContext(String message) {
+    private static void logContext(final String message) {
         if (debug) {
             log(message);
             log(instances.size() + " random access files open");

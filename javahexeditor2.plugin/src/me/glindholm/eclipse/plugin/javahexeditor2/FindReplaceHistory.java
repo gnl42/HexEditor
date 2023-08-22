@@ -35,16 +35,16 @@ public final class FindReplaceHistory {
      * or as hex value(s).
      */
     public static final class Entry {
-        private String stringValue;
-        private boolean hex;
+        private final String stringValue;
+        private final boolean hex;
 
-        public Entry(String stringValue, boolean selected) {
+        public Entry(final String stringValue, final boolean selected) {
             if (stringValue == null) {
                 throw new IllegalArgumentException("Parameter 'stringValue' must not be null.");
             }
 
             this.stringValue = stringValue;
-            this.hex = selected;
+            hex = selected;
         }
 
         public String getStringValue() {
@@ -56,12 +56,12 @@ public final class FindReplaceHistory {
         }
     }
 
-    private List<Entry> findList;
-    private List<Entry> replaceList;
+    private final List<Entry> findList;
+    private final List<Entry> replaceList;
 
     public FindReplaceHistory() {
-        findList = new ArrayList<Entry>();
-        replaceList = new ArrayList<Entry>();
+        findList = new ArrayList<>();
+        replaceList = new ArrayList<>();
     }
 
     /**

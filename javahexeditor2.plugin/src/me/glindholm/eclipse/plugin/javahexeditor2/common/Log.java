@@ -27,11 +27,11 @@ package me.glindholm.eclipse.plugin.javahexeditor2.common;
  */
 public final class Log {
 
-    public static interface Delegate {
+    public interface Delegate {
 
-        public boolean isTraceActive();
+        boolean isTraceActive();
 
-        public void log(String message, Throwable th);
+        void log(String message, Throwable th);
     }
 
     private static final class DefaultDelegate implements Delegate {
@@ -42,7 +42,7 @@ public final class Log {
         }
 
         @Override
-        public void log(String message, Throwable th) {
+        public void log(final String message, final Throwable th) {
             System.err.println(message);
             if (th != null) {
                 th.printStackTrace(System.err);
@@ -60,28 +60,28 @@ public final class Log {
     private Log() {
     }
 
-    public static void setDelegate(Delegate delegate) {
+    public static void setDelegate(final Delegate delegate) {
         Log.delegate = delegate;
     }
 
-    public static void logError(String message, Object[] parameters, Throwable th) {
+    public static void logError(final String message, final Object[] parameters, final Throwable th) {
         if (message == null) {
             throw new IllegalArgumentException("Parameter 'message' must not be null.");
         }
         if (delegate != null) {
-            String m = createMessage("ERROR: ", message, parameters);
+            final String m = createMessage("ERROR: ", message, parameters);
             delegate.log(m, th);
         }
     }
 
-    public static void trace(Object owner, String message, Object... parameters) {
+    public static void trace(final Object owner, final String message, final Object... parameters) {
         if (delegate != null && delegate.isTraceActive()) {
-            String m = createMessage(owner, message, parameters);
+            final String m = createMessage(owner, message, parameters);
             delegate.log(m, null);
         }
     }
 
-    private static String createMessage(Object owner, String message, Object... parameters) {
+    private static String createMessage(final Object owner, String message, final Object... parameters) {
         if (message == null) {
             message = "";
         }

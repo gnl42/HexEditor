@@ -89,25 +89,22 @@ public final class HexEditorInput {
         valid = false;
     }
 
-    public void open(IEditorInput editorInput) throws CoreException {
+    public void open(final IEditorInput editorInput) throws CoreException {
         IFile localFile;
         localFile = null;
         boolean fromHistory = false;
         if (editorInput instanceof FileEditorInput) {
             localFile = ((FileEditorInput) editorInput).getFile();
-        } else if (editorInput instanceof IPathEditorInput) { // eg.
-            // FileInPlaceEditorInput
-            IPathEditorInput file = (IPathEditorInput) editorInput;
+        } else if (editorInput instanceof final IPathEditorInput file) { // eg.
             contentFile = file.getPath().toFile();
-        } else if (editorInput instanceof ILocationProvider) {
-            ILocationProvider location = (ILocationProvider) editorInput;
-            IWorkspaceRoot rootWorkspace = ResourcesPlugin.getWorkspace().getRoot();
+        } else if (editorInput instanceof final ILocationProvider location) {
+            final IWorkspaceRoot rootWorkspace = ResourcesPlugin.getWorkspace().getRoot();
             localFile = rootWorkspace.getFile(location.getPath(location));
         } else if (editorInput instanceof IURIEditorInput) {
-            URI uri = ((IURIEditorInput) editorInput).getURI();
+            final URI uri = ((IURIEditorInput) editorInput).getURI();
             if (uri != null) {
-                IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-                IFile[] files = root.findFilesForLocationURI(uri);
+                final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+                final IFile[] files = root.findFilesForLocationURI(uri);
 
                 if (files.length != 0) {
                     localFile = files[0];
@@ -115,24 +112,20 @@ public final class HexEditorInput {
                     contentFile = new File(uri);
                 }
             }
-        } else if (editorInput instanceof IStorageEditorInput) {
-            // Entries opened from other editor inputs or the history are copied into a
-            // temporary file in a temporary folder which is deleted when copying
-            // fails, another file is opened or when then program is terminated.
-            IStorageEditorInput input = (IStorageEditorInput) editorInput;
+        } else if (editorInput instanceof final IStorageEditorInput input) {
             try {
-                Path tmpDir = Files.createTempDirectory(null);
-                Path tmpFile = tmpDir.resolve(input.getStorage().getName());
+                final Path tmpDir = Files.createTempDirectory(null);
+                final Path tmpFile = tmpDir.resolve(input.getStorage().getName());
                 contentFile = tmpFile.toFile();
                 contentFile.createNewFile();
                 contentFile.deleteOnExit(); // to be on the safe side
                 Files.copy(input.getStorage().getContents(), contentFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 contentFile.delete();
                 throw new CoreException(new Status(IStatus.ERROR, HexEditorPlugin.ID,
                         TextUtility.format(Texts.MANAGER_OPEN_MESSAGE_CANNOT_OPEN_FILE, contentFile.getAbsolutePath()), ex));
 
-            } catch (CoreException ex) {
+            } catch (final CoreException ex) {
                 contentFile.delete();
                 throw ex;
             }
@@ -145,7 +138,7 @@ public final class HexEditorInput {
             contentFile = localFile.getLocation().toFile();
             try {
                 charset = localFile.getCharset(true);
-            } catch (CoreException ex) {
+            } catch (final CoreException ex) {
                 throw new CoreException(new Status(IStatus.ERROR, HexEditorPlugin.ID,
                         TextUtility.format(Texts.MANAGER_OPEN_MESSAGE_CANNOT_DETERMINE_CHARSET_OF_FILE, contentFile.getAbsolutePath()), ex));
             }

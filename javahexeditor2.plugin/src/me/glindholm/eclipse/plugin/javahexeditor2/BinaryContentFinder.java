@@ -37,15 +37,14 @@ import java.util.regex.Pattern;
 public final class BinaryContentFinder {
 
     public static final class Match {
-        private boolean found;
-        private long startPosition;
-        private int length;
-        private IOException exception;
+        private final boolean found;
+        private final long startPosition;
+        private final int length;
+        private final IOException exception;
 
-        Match(boolean found, long position, int length, IOException exception) {
-            super();
+        Match(final boolean found, final long position, final int length, final IOException exception) {
             this.found = found;
-            this.startPosition = position;
+            startPosition = position;
             this.length = length;
             this.exception = exception;
         }
@@ -85,7 +84,7 @@ public final class BinaryContentFinder {
     // end(exclusive) of backward finds
     private byte[] myByteFindSequence;
     private boolean myCaseSensitive = true;
-    private BinaryContent myContent;
+    private final BinaryContent myContent;
     private boolean myDirectionForward = true;
     private CharSequence myLiteral;
     private int myLiteralByteLength = -1;
@@ -98,7 +97,7 @@ public final class BinaryContentFinder {
      * @param literal  the char sequence to find
      * @param aContent provider to be traversed
      */
-    public BinaryContentFinder(CharSequence literal, BinaryContent aContent) {
+    public BinaryContentFinder(final CharSequence literal, final BinaryContent aContent) {
         myLiteral = literal;
         initSearchUnicodeAscii();
         myContent = aContent;
@@ -112,7 +111,7 @@ public final class BinaryContentFinder {
      * @param sequence the byte sequence to find
      * @param aContent provider to be traversed
      */
-    public BinaryContentFinder(byte[] sequence, BinaryContent aContent) {
+    public BinaryContentFinder(final byte[] sequence, final BinaryContent aContent) {
         initSearchHex(sequence);
         myContent = aContent;
         bufferPosition = 0L;
@@ -121,7 +120,7 @@ public final class BinaryContentFinder {
 
     private void findAllMatches() {
         currentPartFound = findHexAsciiMatchInPart();
-        int currentPartFoundUnicode = findUnicodeMatchInPart();
+        final int currentPartFoundUnicode = findUnicodeMatchInPart();
         currentPartFoundIsUnicode = false;
 
         if (currentPartFoundUnicode >= 0 && (currentPartFound < 0 || myDirectionForward && currentPartFound > currentPartFoundUnicode
@@ -146,8 +145,8 @@ public final class BinaryContentFinder {
         for (int i = start; myDirectionForward && i <= inclusiveEnd || !myDirectionForward && i >= inclusiveEnd; i += myDirectionForward ? 1 : -1) {
             boolean matchesSoFar = true;
             for (int j = 0; j < myByteFindSequence.length && matchesSoFar; ++j) {
-                byte existing = byteBuffer.get(i + j);
-                byte matcher = myByteFindSequence[j];
+                final byte existing = byteBuffer.get(i + j);
+                final byte matcher = myByteFindSequence[j];
                 if (existing != matcher) {
                     if (myCaseSensitive || existing < 'A' || existing > 'z' || matcher < 'A' || matcher > 'z'
                             || existing - matcher != 32 && matcher - existing != 32) {
@@ -173,11 +172,11 @@ public final class BinaryContentFinder {
             result = -1;
         }
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        Matcher matcher = myPattern.matcher(byteBuffer.asCharBuffer());
+        final Matcher matcher = myPattern.matcher(byteBuffer.asCharBuffer());
 
         for (int encoding = 0; encoding < 4; ++encoding) {
             while (matcher.find()) {
-                int index = matcher.start() * 2 + (encoding >= 2 ? 1 : 0);
+                final int index = matcher.start() * 2 + (encoding >= 2 ? 1 : 0);
                 if (myDirectionForward && result > index || !myDirectionForward && result < index) {
                     result = index;
                 }
@@ -228,17 +227,17 @@ public final class BinaryContentFinder {
                 findAllMatches();
             }
 
-            long resultStartPosition = bufferPosition + currentPartFound;
-            int resultLength = currentPartFoundIsUnicode ? myLiteralByteLength : myByteFindSequence.length;
+            final long resultStartPosition = bufferPosition + currentPartFound;
+            final int resultLength = currentPartFoundIsUnicode ? myLiteralByteLength : myByteFindSequence.length;
             setNewStart(resultStartPosition + (myDirectionForward ? 1 : resultLength - 1));
 
             return new Match(true, resultStartPosition, resultLength, null);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             return new Match(false, 0, 0, ex);
         }
     }
 
-    private void initSearchHex(byte[] sequence) {
+    private void initSearchHex(final byte[] sequence) {
         myByteFindSequence = sequence;
 
         if (sequence.length > MAX_SEQUENCE_SIZE) {
@@ -260,7 +259,7 @@ public final class BinaryContentFinder {
 
     private void initSearchUnicodeAscii() {
         // everything-quoted regular expression
-        StringBuilder regex = new StringBuilder("\\Q");
+        final StringBuilder regex = new StringBuilder("\\Q");
 
         // 16 bit Unicode chars
         if (myLiteral.length() * 2 > MAX_SEQUENCE_SIZE) {
@@ -269,10 +268,10 @@ public final class BinaryContentFinder {
         myLiteralByteLength = myLiteral.length() * 2;
 
         boolean isAsciiCompatible = true;
-        byte[] tmpBytes = new byte[myLiteral.length()];
+        final byte[] tmpBytes = new byte[myLiteral.length()];
         char previous = '\0';
         for (int i = 0; i < myLiteral.length(); ++i) {
-            char aChar = myLiteral.charAt(i);
+            final char aChar = myLiteral.charAt(i);
             regex.append(aChar);
 
             if (previous == '\\' && aChar == 'E') {
@@ -330,7 +329,7 @@ public final class BinaryContentFinder {
         populatePart(size);
     }
 
-    private void populatePart(int size) throws IOException {
+    private void populatePart(final int size) throws IOException {
         if (myContent == null) {
             return;
         }
@@ -353,7 +352,7 @@ public final class BinaryContentFinder {
      *
      * @param beSensitive set to true will not match 'a' with 'A'
      */
-    public void setCaseSensitive(boolean beSensitive) {
+    public void setCaseSensitive(final boolean beSensitive) {
         if (myCaseSensitive == beSensitive) {
             return;
         }
@@ -369,7 +368,7 @@ public final class BinaryContentFinder {
      *
      * @param goForward set to true for forward search
      */
-    public void setDirectionForward(boolean goForward) {
+    public void setDirectionForward(final boolean goForward) {
         myDirectionForward = goForward;
     }
 
@@ -378,7 +377,7 @@ public final class BinaryContentFinder {
      *
      * @param startPoint next match search will start from this point
      */
-    public void setNewStart(long startPoint) {
+    public void setNewStart(final long startPoint) {
         if (startPoint < 0L || startPoint > getContentLength()) {
             return;
         }

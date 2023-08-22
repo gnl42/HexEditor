@@ -1,6 +1,6 @@
 /*
  * javahexeditor, a java hex editor
- * Copyright (C) 2006, 2009 Jordi Bergenthal, pestatije(-at_)users.sourceforge.net 
+ * Copyright (C) 2006, 2009 Jordi Bergenthal, pestatije(-at_)users.sourceforge.net
  * Copyright (C) 2018 - 2021 Peter Dell, peterdell(-at_)users.sourceforge.net
  * The official javahexeditor site is https://sourceforge.net/projects/javahexeditor
  *
@@ -65,18 +65,18 @@ final class BinaryContentClipboard {
         }
 
         @Override
-        public void javaToNative(Object object, TransferData transferData) {
+        public void javaToNative(final Object object, final TransferData transferData) {
             if (object == null || !(object instanceof File)) {
                 return;
             }
 
             if (isSupportedType(transferData)) {
-                File myType = (File) object;
+                final File myType = (File) object;
                 try {
                     // write data to a byte array and then ask super to convert
                     // to pMedium
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    DataOutputStream writeOut = new DataOutputStream(out);
+                    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    final DataOutputStream writeOut = new DataOutputStream(out);
                     byte[] buffer = myType.getAbsolutePath().getBytes();
                     writeOut.writeInt(buffer.length);
                     writeOut.write(buffer);
@@ -85,35 +85,35 @@ final class BinaryContentClipboard {
 
                     super.javaToNative(buffer, transferData);
 
-                } catch (IOException e) {
+                } catch (final IOException e) {
                 } // copy nothing then
             }
         }
 
         @Override
-        public Object nativeToJava(TransferData transferData) {
+        public Object nativeToJava(final TransferData transferData) {
             if (!isSupportedType(transferData)) {
                 return null;
             }
 
-            byte[] buffer = (byte[]) super.nativeToJava(transferData);
+            final byte[] buffer = (byte[]) super.nativeToJava(transferData);
             if (buffer == null) {
                 return null;
             }
 
             File myData = null;
-            DataInputStream readIn = new DataInputStream(new ByteArrayInputStream(buffer));
+            final DataInputStream readIn = new DataInputStream(new ByteArrayInputStream(buffer));
             try {
-                int size = readIn.readInt();
+                final int size = readIn.readInt();
                 if (size < 1) {
                     return null;
                 }
-                byte[] name = new byte[size];
+                final byte[] name = new byte[size];
                 if (readIn.read(name) < size) {
                     return null;
                 }
                 myData = new File(new String(name));
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
             } // paste nothing then
 
             return myData;
@@ -144,19 +144,19 @@ final class BinaryContentClipboard {
         }
 
         @Override
-        public void javaToNative(Object object, TransferData transferData) {
+        public void javaToNative(final Object object, final TransferData transferData) {
             if (object == null || !(object instanceof byte[])) {
                 return;
             }
 
             if (isSupportedType(transferData)) {
-                byte[] buffer = (byte[]) object;
+                final byte[] buffer = (byte[]) object;
                 super.javaToNative(buffer, transferData);
             }
         }
 
         @Override
-        public Object nativeToJava(TransferData transferData) {
+        public Object nativeToJava(final TransferData transferData) {
             Object result = null;
             if (isSupportedType(transferData)) {
                 result = super.nativeToJava(transferData);
@@ -180,11 +180,11 @@ final class BinaryContentClipboard {
 
     // 4 Megs for byte[], 4 Megs for text
     private static final long maxClipboardDataInMemory = 4 * 1024 * 1024;
-    private Clipboard myClipboard;
-    private Map<File, Integer> myFilesReferencesCounter;
+    private final Clipboard myClipboard;
+    private final Map<File, Integer> myFilesReferencesCounter;
 
     static {
-        File tempFolder = new File(System.getProperty("java.io.tmpdir", "."));
+        final File tempFolder = new File(System.getProperty("java.io.tmpdir", "."));
         CLIPBOARD_FOLDER_PATH = tempFolder.getAbsolutePath();
     }
 
@@ -193,22 +193,22 @@ final class BinaryContentClipboard {
      *
      * @param display
      */
-    public BinaryContentClipboard(Display display) {
+    public BinaryContentClipboard(final Display display) {
         clipboardFile = new File(new File(CLIPBOARD_FOLDER_PATH), CLIPBOARD_FILE_NAME);
 
         myClipboard = new Clipboard(display);
-        myFilesReferencesCounter = new HashMap<File, Integer>();
+        myFilesReferencesCounter = new HashMap<>();
     }
 
-    public static boolean deleteFileALaMs(File file) {
+    public static boolean deleteFileALaMs(final File file) {
         // horrible hack for even worse M$ OS
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
         boolean success = false;
         while (!(success = file.delete()) && System.currentTimeMillis() - time < 1234L) {
             System.gc();
             try {
                 Thread.sleep(333);
-            } catch (InterruptedException e) { /* Keep trying */
+            } catch (final InterruptedException e) { /* Keep trying */
             }
         }
         if (success) {
@@ -225,16 +225,16 @@ final class BinaryContentClipboard {
      * @see Clipboard#dispose()
      */
     public void dispose() throws IOException {
-        File lastPaste = (File) myClipboard.getContents(FileByteArrayTransfer.getInstance());
+        final File lastPaste = (File) myClipboard.getContents(FileByteArrayTransfer.getInstance());
         myClipboard.dispose();
 
         if (!clipboardFile.equals(lastPaste)) { // null
             emptyClipboardFile();
         }
 
-        for (File aFile : myFilesReferencesCounter.keySet()) {
-            int count = (myFilesReferencesCounter.get(aFile)).intValue();
-            File lock = getLockFromFile(aFile);
+        for (final File aFile : myFilesReferencesCounter.keySet()) {
+            final int count = myFilesReferencesCounter.get(aFile);
+            final File lock = getLockFromFile(aFile);
             if (updateLock(lock, -count)) { // lock deleted
                 if (!deleteFileALaMs(aFile)) {
                     aFile.deleteOnExit();
@@ -246,10 +246,10 @@ final class BinaryContentClipboard {
     private void emptyClipboardFile() {
         if (clipboardFile.canWrite() && clipboardFile.length() > 0L) {
             try {
-                RandomAccessFile file = RandomAccessFileFactory.createRandomAccessFile(clipboardFile, "rw");
+                final RandomAccessFile file = RandomAccessFileFactory.createRandomAccessFile(clipboardFile, "rw");
                 file.setLength(0L);
                 file.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
             } // ok, leave it alone
         }
     }
@@ -272,7 +272,7 @@ final class BinaryContentClipboard {
      * @param insert
      * @return
      */
-    public long getContents(BinaryContent content, long start, boolean insert) {
+    public long getContents(final BinaryContent content, final long start, final boolean insert) {
         long total = tryGettingFiles(content, start, insert);
         if (total >= 0L) {
             return total;
@@ -291,8 +291,8 @@ final class BinaryContentClipboard {
         return 0L;
     }
 
-    private File getLockFromFile(File lastPaste) {
-        String name = lastPaste.getAbsolutePath();
+    private File getLockFromFile(final File lastPaste) {
+        final String name = lastPaste.getAbsolutePath();
         return new File(name.substring(0, name.length() - 3) + "lock");
     }
 
@@ -302,10 +302,10 @@ final class BinaryContentClipboard {
      * @return true: data is available
      */
     public boolean hasContents() {
-        TransferData[] available = myClipboard.getAvailableTypes();
-        for (int i = 0; i < available.length; ++i) {
-            if (MemoryByteArrayTransfer.getInstance().isSupportedType(available[i]) || TextTransfer.getInstance().isSupportedType(available[i])
-                    || FileByteArrayTransfer.getInstance().isSupportedType(available[i]) || FileTransfer.getInstance().isSupportedType(available[i])) {
+        final TransferData[] available = myClipboard.getAvailableTypes();
+        for (final TransferData element : available) {
+            if (MemoryByteArrayTransfer.getInstance().isSupportedType(element) || TextTransfer.getInstance().isSupportedType(element)
+                    || FileByteArrayTransfer.getInstance().isSupportedType(element) || FileTransfer.getInstance().isSupportedType(element)) {
                 return true;
             }
         }
@@ -320,7 +320,7 @@ final class BinaryContentClipboard {
      * @param start
      * @param length
      */
-    public void setContents(BinaryContent content, long start, long length) {
+    public void setContents(final BinaryContent content, final long start, final long length) {
         if (length < 1L) {
             return;
         }
@@ -329,9 +329,9 @@ final class BinaryContentClipboard {
         Transfer[] transfers = null;
         try {
             if (length <= maxClipboardDataInMemory) {
-                byte[] byteArrayData = new byte[(int) length];
+                final byte[] byteArrayData = new byte[(int) length];
                 content.get(ByteBuffer.wrap(byteArrayData), start);
-                String textData = new String(byteArrayData);
+                final String textData = new String(byteArrayData);
                 transfers = new Transfer[] { MemoryByteArrayTransfer.getInstance(), TextTransfer.getInstance() };
                 data = new Object[] { byteArrayData, textData };
             } else {
@@ -339,7 +339,7 @@ final class BinaryContentClipboard {
                 transfers = new Transfer[] { FileByteArrayTransfer.getInstance() };
                 data = new Object[] { clipboardFile };
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             myClipboard.setContents(new Object[] { new byte[1] }, new Transfer[] { MemoryByteArrayTransfer.getInstance() });
             myClipboard.clearContents();
             emptyClipboardFile();
@@ -352,7 +352,7 @@ final class BinaryContentClipboard {
      * The file is being reference counted. It will be deleted as soon as no javahexeditor process is
      * referencing it anymore.
      */
-    private long tryGettingFileByteArray(BinaryContent content, long start, boolean insert) {
+    private long tryGettingFileByteArray(final BinaryContent content, final long start, final boolean insert) {
         File lastPaste = (File) myClipboard.getContents(FileByteArrayTransfer.getInstance());
         if (lastPaste == null) {
             return -1L;
@@ -365,8 +365,8 @@ final class BinaryContentClipboard {
         File lock = null;
         if (clipboardFile.equals(lastPaste)) {
             for (int i = 0; i < 9999; ++i) {
-                String fileName = TextUtility.format(CLIPBOARD_FILE_NAME_PASTED, String.valueOf(i));
-                File clipboardDir = new File(CLIPBOARD_FOLDER_PATH);
+                final String fileName = TextUtility.format(CLIPBOARD_FILE_NAME_PASTED, String.valueOf(i));
+                final File clipboardDir = new File(CLIPBOARD_FOLDER_PATH);
                 lastPaste = new File(clipboardDir, fileName);
                 lock = new File(clipboardDir, fileName + ".lock");
                 if (!lock.exists()) {
@@ -375,7 +375,7 @@ final class BinaryContentClipboard {
                     }
                 }
             }
-            if (lastPaste.exists() || (lock != null && lock.exists())) {
+            if (lastPaste.exists() || lock != null && lock.exists()) {
                 return 0L;
             }
             clipboardFile.renameTo(lastPaste);
@@ -389,35 +389,35 @@ final class BinaryContentClipboard {
             } else {
                 content.overwrite(lastPaste, start);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             total = 0L;
         }
         if (total > 0L) {
             try {
                 updateLock(lock, 1);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 myFilesReferencesCounter.remove(lastPaste);
                 return total;
             }
-            Integer value = myFilesReferencesCounter.put(lastPaste, Integer.valueOf(1));
+            final Integer value = myFilesReferencesCounter.put(lastPaste, 1);
             if (value != null) {
-                myFilesReferencesCounter.put(lastPaste, Integer.valueOf(value.intValue() + 1));
+                myFilesReferencesCounter.put(lastPaste, value.intValue() + 1);
             }
         }
 
         return total;
     }
 
-    private long tryGettingFiles(BinaryContent content, long start, boolean insert) {
-        String[] files = (String[]) myClipboard.getContents(FileTransfer.getInstance());
+    private long tryGettingFiles(final BinaryContent content, long start, final boolean insert) {
+        final String[] files = (String[]) myClipboard.getContents(FileTransfer.getInstance());
         if (files == null) {
             return -1L;
         }
 
         long total = 0L;
         if (!insert) {
-            for (int i = 0; i < files.length; ++i) {
-                File file = new File(files[i]);
+            for (final String file2 : files) {
+                final File file = new File(file2);
                 total += file.length();
                 if (total > content.length() - start) {
                     return 0L; // would overflow
@@ -431,7 +431,7 @@ final class BinaryContentClipboard {
             File file = new File(files[i]);
             try {
                 file = file.getCanonicalFile();
-            } catch (IOException e) {
+            } catch (final IOException e) {
             } // use non-canonical one then
             boolean success = true;
             try {
@@ -440,7 +440,7 @@ final class BinaryContentClipboard {
                 } else {
                     content.overwrite(file, start);
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 success = false;
             }
             if (success) {
@@ -452,10 +452,10 @@ final class BinaryContentClipboard {
         return total;
     }
 
-    private long tryGettingMemoryByteArray(BinaryContent content, long start, boolean insert) {
+    private long tryGettingMemoryByteArray(final BinaryContent content, final long start, final boolean insert) {
         byte[] byteArray = (byte[]) myClipboard.getContents(MemoryByteArrayTransfer.getInstance());
         if (byteArray == null) {
-            String text = (String) myClipboard.getContents(TextTransfer.getInstance());
+            final String text = (String) myClipboard.getContents(TextTransfer.getInstance());
             if (text != null) {
                 byteArray = text.getBytes();
             }
@@ -465,7 +465,7 @@ final class BinaryContentClipboard {
         }
 
         long total = byteArray.length;
-        ByteBuffer buffer = ByteBuffer.wrap(byteArray);
+        final ByteBuffer buffer = ByteBuffer.wrap(byteArray);
         if (insert) {
             content.insert(buffer, start);
         } else if (total <= content.length() - start) {
@@ -477,8 +477,8 @@ final class BinaryContentClipboard {
         return total;
     }
 
-    private boolean updateLock(File lock, int references) throws IOException {
-        RandomAccessFile file = RandomAccessFileFactory.createRandomAccessFile(lock, "rw");
+    private boolean updateLock(final File lock, int references) throws IOException {
+        final RandomAccessFile file = RandomAccessFileFactory.createRandomAccessFile(lock, "rw");
         if (file.length() >= 4) {
             references += file.readInt();
         }

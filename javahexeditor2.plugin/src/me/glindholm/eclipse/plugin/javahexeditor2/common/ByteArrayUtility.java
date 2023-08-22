@@ -48,27 +48,27 @@ public final class ByteArrayUtility {
      * @param hexString an hex string (ie. "0fdA1").
      * @return the byte[] value of the hex string
      */
-    public static byte[] parseString(String value) throws NumberFormatException {
-        List<Byte> bytes = new ArrayList<Byte>();
-        StringTokenizer st = new StringTokenizer(value);
+    public static byte[] parseString(final String value) throws NumberFormatException {
+        final List<Byte> bytes = new ArrayList<>();
+        final StringTokenizer st = new StringTokenizer(value);
         while (st.hasMoreTokens()) {
             String hexString = st.nextToken();
             if ((hexString.length() & 1) == 1) {
                 hexString = '0' + hexString;
             }
             for (int i = 0; i < hexString.length(); i = i + 2) {
-                int high = Character.digit(hexString.charAt(i), 16);
-                int low = Character.digit(hexString.charAt(i + 1), 16);
+                final int high = Character.digit(hexString.charAt(i), 16);
+                final int low = Character.digit(hexString.charAt(i + 1), 16);
                 if (high < 0 || low < 0) {
                     throw new NumberFormatException(TextUtility.format(Texts.BYTE_ARRAY_UTILITY_INVALID_HEX_STRING, value));
                 }
-                bytes.add(Byte.valueOf((byte) ((high << 4) | low)));
+                bytes.add((byte) (high << 4 | low));
 
             }
         }
-        byte[] result = new byte[bytes.size()];
+        final byte[] result = new byte[bytes.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = bytes.get(i).byteValue();
+            result[i] = bytes.get(i);
         }
 
         return result;

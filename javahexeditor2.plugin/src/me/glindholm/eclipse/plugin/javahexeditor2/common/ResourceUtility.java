@@ -39,7 +39,7 @@ public final class ResourceUtility {
      * @param path The resource path, not empty, not <code>null</code>.
      * @return The resource content or <code>null</code> if the resource was not found.
      */
-    public static String loadResourceAsString(String path) {
+    public static String loadResourceAsString(final String path) {
         if (path == null) {
             throw new IllegalArgumentException("Parameter 'path' must not be null.");
         }
@@ -50,23 +50,23 @@ public final class ResourceUtility {
         if (inputStream == null) {
             return null;
         }
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         try {
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            char[] buffer = new char[8192];
+            final InputStreamReader reader = new InputStreamReader(inputStream);
+            final char[] buffer = new char[8192];
             int actualLength;
             while ((actualLength = reader.read(buffer, 0, buffer.length)) != -1) {
                 builder.append(buffer, 0, actualLength);
             }
             reader.close();
 
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Log.logError("Cannot load resource '{0}'.", new Object[] { path }, ex);
         } finally {
 
             try {
                 inputStream.close();
-            } catch (IOException ignore) {
+            } catch (final IOException ignore) {
             }
         }
         return builder.toString();
@@ -81,20 +81,20 @@ public final class ResourceUtility {
      * @param path The path of the resource to load, not <code>null</code>.
      * @return The input stream or <code>null</code> if the source was not found.
      */
-    private static InputStream getInputStream(String path) {
+    private static InputStream getInputStream(final String path) {
         if (path == null) {
             throw new IllegalArgumentException("Parameter 'path' must not be null.");
         }
         // If there is no loader, the program was launched using the Java
         // boot class path and the system class loader must be used.
-        ClassLoader loader = ResourceUtility.class.getClassLoader();
-        URL url = (loader == null) ? ClassLoader.getSystemResource(path) : loader.getResource(path);
+        final ClassLoader loader = ResourceUtility.class.getClassLoader();
+        final URL url = loader == null ? ClassLoader.getSystemResource(path) : loader.getResource(path);
         InputStream result = null;
         try {
             if (url != null) {
                 result = url.openStream();
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Log.logError("Cannot get input stream for path '{0}'", new Object[] { path }, ex);
         }
         return result;

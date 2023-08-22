@@ -31,8 +31,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -41,7 +39,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -69,7 +66,7 @@ public final class Manager {
     private static final String VERSION_PATH = "net/sourceforge/javahexeditor/Manager.version";
 
     // Logic components
-    private FileToucher fileToucher;
+    private final FileToucher fileToucher;
 
     // State
     private BinaryContent content;
@@ -91,7 +88,7 @@ public final class Manager {
     private GoToDialog goToDialog;
     private SelectBlockDialog selectBlockDialog;
 
-    public Manager(FileToucher fileToucher) {
+    public Manager(final FileToucher fileToucher) {
         if (fileToucher == null) {
             throw new IllegalArgumentException("Parameter 'fileToucher' must not be null.");
         }
@@ -131,7 +128,7 @@ public final class Manager {
      *
      * @param parent Composite where the part will be created, not <code>null</code>.
      */
-    public HexTexts createEditorPart(Composite parent) {
+    public HexTexts createEditorPart(final Composite parent) {
         if (parent == null) {
             throw new IllegalArgumentException("Parameter 'parent' must not be null.");
         }
@@ -145,14 +142,11 @@ public final class Manager {
         hexTexts.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         hexTexts.setEnabled(false);
 
-        hexTexts.addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                if (font != null && !font.isDisposed()) {
-                    font.dispose();
-                }
-                hexTexts = null;
+        hexTexts.addDisposeListener(e -> {
+            if (font != null && !font.isDisposed()) {
+                font.dispose();
             }
+            hexTexts = null;
         });
         if (fontData != null) {
             font = new Font(Display.getCurrent(), fontData);
@@ -161,26 +155,21 @@ public final class Manager {
 
         hexTexts.addLongSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 updateStatusLineAfterLongSelection();
             }
         });
-        hexTexts.addListener(SWT.Modify, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-                updateStatusLineAfterModify();
-            }
-        });
+        hexTexts.addListener(SWT.Modify, event -> updateStatusLineAfterModify());
 
         if (listOfStatusChangedListeners != null) {
-            for (Listener listener : listOfStatusChangedListeners) {
+            for (final Listener listener : listOfStatusChangedListeners) {
                 hexTexts.addListener(SWT.Modify, listener);
             }
             listOfStatusChangedListeners = null;
         }
 
         if (listOfLongListeners != null) {
-            for (SelectionListener listener : listOfLongListeners) {
+            for (final SelectionListener listener : listOfLongListeners) {
                 hexTexts.addLongSelectionListener(listener);
             }
             listOfLongListeners = null;
@@ -194,14 +183,14 @@ public final class Manager {
      *
      * @param listener the listener to be notified of changes
      */
-    public void addListener(Listener listener) {
+    public void addListener(final Listener listener) {
         if (listener == null) {
             return;
         }
 
         if (hexTexts == null) {
             if (listOfStatusChangedListeners == null) {
-                listOfStatusChangedListeners = new ArrayList<Listener>();
+                listOfStatusChangedListeners = new ArrayList<>();
             }
             listOfStatusChangedListeners.add(listener);
         } else {
@@ -216,14 +205,14 @@ public final class Manager {
      * @param listener the listener
      * @see StyledText#addSelectionListener(org.eclipse.swt.events.SelectionListener)
      */
-    public void addLongSelectionListener(SelectionListener listener) {
+    public void addLongSelectionListener(final SelectionListener listener) {
         if (listener == null) {
             throw new IllegalArgumentException();
         }
 
         if (hexTexts == null) {
             if (listOfLongListeners == null) {
-                listOfLongListeners = new ArrayList<SelectionListener>();
+                listOfLongListeners = new ArrayList<>();
             }
             listOfLongListeners.add(listener);
         } else {
@@ -240,8 +229,8 @@ public final class Manager {
      * @return
      * @see #addLongSelectionListener(org.eclipse.swt.events.SelectionListener)
      */
-    public long[] getLongSelection(SelectionEvent event) {
-        return new long[] { ((long) event.width) << 32 | (event.x & 0x0ffffffffL), ((long) event.height) << 32 | (event.y & 0x0ffffffffL) };
+    public long[] getLongSelection(final SelectionEvent event) {
+        return new long[] { (long) event.width << 32 | event.x & 0x0ffffffffL, (long) event.height << 32 | event.y & 0x0ffffffffL };
     }
 
     public boolean isValid() {
@@ -280,7 +269,7 @@ public final class Manager {
      * @param parent            Composite where the part will be created, not <code>null</code>.
      * @param withLeftSeparator so it can be put besides other status items (for plugin)
      */
-    public Composite createStatusPart(Composite parent, boolean withLeftSeparator) {
+    public Composite createStatusPart(final Composite parent, final boolean withLeftSeparator) {
         if (parent == null) {
             throw new IllegalArgumentException("Parameter 'parent' must not be null.");
         }
@@ -348,9 +337,9 @@ public final class Manager {
             goToDialog = new GoToDialog(textsParent.getShell());
         }
 
-        long location = goToDialog.open(hexTexts.getShell(), content.length() - 1L);
+        final long location = goToDialog.open(hexTexts.getShell(), content.length() - 1L);
         if (location >= 0L) {
-            long button = goToDialog.getButtonPressed();
+            final long button = goToDialog.getButtonPressed();
             if (button == 1) {
                 hexTexts.showMark(location);
             } else {
@@ -371,18 +360,18 @@ public final class Manager {
             selectBlockDialog = new SelectBlockDialog(textsParent.getShell());
         }
         if (selectBlockDialog.open(hexTexts.getShell(), hexTexts.getSelection(), content.length())) {
-            long start = selectBlockDialog.getFinalStartResult();
-            long end = selectBlockDialog.getFinalEndResult();
-            if ((start >= 0L) && (end >= 0L) && (start != end)) {
+            final long start = selectBlockDialog.getFinalStartResult();
+            final long end = selectBlockDialog.getFinalEndResult();
+            if (start >= 0L && end >= 0L && start != end) {
                 hexTexts.selectBlock(start, end);
             }
         }
     }
 
-    public void doOpen(File forceThisFile, boolean createNewFile, String charset) throws CoreException {
+    public void doOpen(File forceThisFile, final boolean createNewFile, final String charset) throws CoreException {
         String filePath = "";
         if (forceThisFile == null && !createNewFile) {
-            FileDialog fileDialog = createFileDialog(shell, SWT.OPEN);
+            final FileDialog fileDialog = createFileDialog(shell, SWT.OPEN);
             filePath = fileDialog.open();
             if (filePath == null) {
                 return;
@@ -392,7 +381,7 @@ public final class Manager {
         if (forceThisFile != null) {
             try {
                 forceThisFile = forceThisFile.getCanonicalFile();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 // use non-canonical one then
             }
             filePath = forceThisFile.getAbsolutePath();
@@ -400,7 +389,7 @@ public final class Manager {
 
         try {
             openFile(forceThisFile, charset);
-        } catch (CoreException ex) {
+        } catch (final CoreException ex) {
             throw ex;
         }
 
@@ -429,15 +418,15 @@ public final class Manager {
      *
      * @throws IOException If the operation fails
      */
-    public void doSaveSelectionAs(File file) throws IOException {
+    public void doSaveSelectionAs(final File file) throws IOException {
         if (isFileBeingRead(file)) {
             throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_OVERWRITE_FILE_IN_USE, file.getAbsolutePath()));
         }
 
-        RangeSelection selection = hexTexts.getSelection();
+        final RangeSelection selection = hexTexts.getSelection();
         try {
             content.get(file, selection.start, selection.getLength());
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_SAVE_FILE, file.getAbsolutePath(), ex.getMessage()));
 
         }
@@ -522,7 +511,7 @@ public final class Manager {
         return content.isDirty();
     }
 
-    private boolean isFileBeingRead(File file) {
+    private boolean isFileBeingRead(final File file) {
         return file.equals(contentFile) || content.getOpenFiles().contains(file);
     }
 
@@ -559,14 +548,14 @@ public final class Manager {
      * @param charset     the charset, not <code>null</code>
      * @throws CoreException if the input file cannot be read
      */
-    public void openFile(File contentFile, String charset) throws CoreException {
+    public void openFile(final File contentFile, final String charset) throws CoreException {
         this.contentFile = contentFile;
         if (contentFile == null) {
             content = new BinaryContent();
         } else {
             try {
                 content = new BinaryContent(contentFile);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 this.contentFile = null;
                 throw new CoreException(
                         new Status(IStatus.ERROR, ID, TextUtility.format(Texts.MANAGER_OPEN_MESSAGE_CANNOT_OPEN_FILE, contentFile.getAbsolutePath()), ex));
@@ -588,7 +577,7 @@ public final class Manager {
      *
      * @param other manager to copy its control from
      */
-    public void reuseStatusLinelFrom(Manager other) {
+    public void reuseStatusLinelFrom(final Manager other) {
         if (other == null) {
             throw new IllegalArgumentException("Parameter 'other' must not be null.");
         }
@@ -603,7 +592,7 @@ public final class Manager {
      * @param monitor The progress monitor or <code>null</code>.
      * @throws IOException If the operation fails
      */
-    public void saveAsFile(File file, IProgressMonitor monitor) throws IOException {
+    public void saveAsFile(final File file, final IProgressMonitor monitor) throws IOException {
         if (file == null) {
             throw new IllegalArgumentException("Parameter 'file' must not be null.");
         }
@@ -615,7 +604,7 @@ public final class Manager {
         try {
             content.get(file);
             content.dispose();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_SAVE_FILE, file.getAbsolutePath(), ex.getMessage()));
         }
 
@@ -631,7 +620,7 @@ public final class Manager {
      *
      * @param findReplaceHistory The modifiable find-replace history, not <code>null</code>.
      */
-    public void setFindReplaceHistory(FindReplaceHistory findReplaceHistory) {
+    public void setFindReplaceHistory(final FindReplaceHistory findReplaceHistory) {
         if (findReplaceHistory == null) {
             throw new IllegalArgumentException("Parameter 'findReplaceHistory' must not be null.");
         }
@@ -653,7 +642,7 @@ public final class Manager {
         if (statusLine != null) {
             statusLine.updateInsertMode(hexTexts == null ? true : !hexTexts.isOverwriteMode());
             if (hexTexts != null && hexTexts.getContent() != null) {
-                long size = hexTexts.getContent().length();
+                final long size = hexTexts.getContent().length();
                 statusLine.updatePositionWidth(size);
                 statusLine.updateSizeWidth(size);
                 if (hexTexts.isSelected()) {
@@ -674,7 +663,7 @@ public final class Manager {
         }
     }
 
-    public void setSelection(RangeSelection selection) {
+    public void setSelection(final RangeSelection selection) {
         if (selection == null) {
             throw new IllegalArgumentException("Parameter 'selection' must not be null.");
         }
@@ -691,14 +680,14 @@ public final class Manager {
      * @param aFont new font to be used; should be a constant char width font. Use <code>null</code> to
      *              set to the default font.
      */
-    public void setTextFont(FontData aFont) {
+    public void setTextFont(final FontData aFont) {
         fontData = aFont;
         if (Preferences.getDefaultFontData().equals(aFont)) {
             fontData = null;
         }
         // dispose it after setting new one
         // StyledTextRenderer 3.448 bug in line 994
-        Font fontToDispose = font;
+        final Font fontToDispose = font;
         font = null;
         if (hexTexts != null) {
             if (fontData != null) {
@@ -718,20 +707,20 @@ public final class Manager {
      * @param selection
      * @return
      */
-    public File showSaveAsDialog(Shell aShell, boolean selection) {
-        FileDialog dialog = createFileDialog(aShell, SWT.SAVE);
+    public File showSaveAsDialog(final Shell aShell, final boolean selection) {
+        final FileDialog dialog = createFileDialog(aShell, SWT.SAVE);
 
         if (selection) {
             dialog.setText(Texts.MANAGER_SAVE_DIALOG_TITLE_SAVE_SELECTION_AS);
         } else {
             dialog.setText(Texts.MANAGER_SAVE_DIALOG_TITLE_SAVE_AS);
         }
-        String filePath = dialog.open();
+        final String filePath = dialog.open();
         if (filePath == null) {
             return null;
         }
 
-        File file = new File(filePath);
+        final File file = new File(filePath);
         if (file.exists()) {
             if (SWTUtility.showMessage(aShell, SWT.ICON_WARNING | SWT.YES | SWT.NO, Texts.MANAGER_SAVE_DIALOG_TITLE_FILE_ALREADY_EXISTS,
                     Texts.MANAGER_SAVE_DIALOG_MESSAGE_FILE_ALREADY_EXISTS, file.getAbsolutePath()) != SWT.YES) {
@@ -741,8 +730,8 @@ public final class Manager {
         return file;
     }
 
-    private FileDialog createFileDialog(Shell aShell, int style) {
-        FileDialog dialog = new FileDialog(aShell, style);
+    private FileDialog createFileDialog(final Shell aShell, final int style) {
+        final FileDialog dialog = new FileDialog(aShell, style);
         String filterPath;
         if (contentFile != null) {
             filterPath = contentFile.getParentFile().getAbsolutePath();

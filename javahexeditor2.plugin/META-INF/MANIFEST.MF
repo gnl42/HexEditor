@@ -23,6 +23,7 @@ Export-Package: me.glindholm.eclipse.plugin.javahexeditor2;
    me.glindholm.eclipse.plugin.javahexeditor2,
    org.eclipse.ui.plugin",
  me.glindholm.eclipse.plugin.javahexeditor2.actions;uses:="org.eclipse.ui,org.eclipse.jface.action,org.eclipse.jface.viewers",
+ me.glindholm.eclipse.plugin.javahexeditor2.common,
  me.glindholm.eclipse.plugin.javahexeditor2.editors;
   uses:="org.eclipse.jface.action,
    org.eclipse.swt.graphics,

@@ -38,8 +38,8 @@ import me.glindholm.eclipse.plugin.javahexeditor2.common.Log;
  */
 final class DisplayedContent implements StyledTextContent {
 
-    private StringBuilder myData;
-    private Set<TextChangeListener> myTextListeners;
+    private final StringBuilder myData;
+    private final Set<TextChangeListener> myTextListeners;
     private int numberOfColumns = -1;
     // private int numberOfLines = -1;
     private int linesTimesColumns = -1;
@@ -50,15 +50,15 @@ final class DisplayedContent implements StyledTextContent {
      * @param numberOfLines
      * @param numberOfColumns
      */
-    DisplayedContent(int numberOfColumns, int numberOfLines) {
+    DisplayedContent(final int numberOfColumns, final int numberOfLines) {
         // reserve space and account for replacements
         myData = new StringBuilder(numberOfColumns * numberOfLines * 2);
-        myTextListeners = new HashSet<TextChangeListener>();
+        myTextListeners = new HashSet<>();
         setDimensions(numberOfColumns, numberOfLines);
     }
 
     @Override
-    public void addTextChangeListener(TextChangeListener listener) {
+    public void addTextChangeListener(final TextChangeListener listener) {
         if (listener == null) {
             throw new IllegalArgumentException("Parameter 'listener' must not be null.");
         }
@@ -71,13 +71,13 @@ final class DisplayedContent implements StyledTextContent {
     }
 
     @Override
-    public String getLine(int lineIndex) {
+    public String getLine(final int lineIndex) {
         return getTextRange(lineIndex * numberOfColumns, numberOfColumns);
     }
 
     @Override
-    public int getLineAtOffset(int offset) {
-        int result = offset / numberOfColumns;
+    public int getLineAtOffset(final int offset) {
+        final int result = offset / numberOfColumns;
         if (result >= getLineCount()) {
             return getLineCount() - 1;
         }
@@ -96,13 +96,13 @@ final class DisplayedContent implements StyledTextContent {
     }
 
     @Override
-    public int getOffsetAtLine(int lineIndex) {
+    public int getOffsetAtLine(final int lineIndex) {
         return lineIndex * numberOfColumns;
     }
 
     @Override
-    public String getTextRange(int start, int length) {
-        int dataLength = myData.length();
+    public String getTextRange(final int start, final int length) {
+        final int dataLength = myData.length();
         if (start > dataLength) {
             return Texts.EMPTY;
         }
@@ -111,7 +111,7 @@ final class DisplayedContent implements StyledTextContent {
     }
 
     @Override
-    public void removeTextChangeListener(TextChangeListener listener) {
+    public void removeTextChangeListener(final TextChangeListener listener) {
         if (listener == null) {
             throw new IllegalArgumentException("Cannot remove a null listener");
         }
@@ -127,8 +127,8 @@ final class DisplayedContent implements StyledTextContent {
      * @see org.eclipse.swt.custom.StyledTextContent#replaceTextRange(int, int, java.lang.String)
      */
     @Override
-    public void replaceTextRange(int start, int replaceLength, String text) {
-        int length = text.length();
+    public void replaceTextRange(final int start, final int replaceLength, final String text) {
+        final int length = text.length();
         if (length != replaceLength || start + length > myData.length()) {
             return;
         }
@@ -136,7 +136,7 @@ final class DisplayedContent implements StyledTextContent {
         myData.replace(start, start + length, text);
     }
 
-    void setDimensions(int columns, int lines) {
+    void setDimensions(final int columns, final int lines) {
         numberOfColumns = columns;
         // numberOfLines = lines;
         linesTimesColumns = lines * columns;
@@ -144,12 +144,12 @@ final class DisplayedContent implements StyledTextContent {
     }
 
     @Override
-    public void setText(String text) {
+    public void setText(final String text) {
         myData.setLength(0);
         myData.append(text.substring(0, Math.min(text.length(), linesTimesColumns)));
 
-        TextChangedEvent changedEvent = new TextChangedEvent(this);
-        for (TextChangeListener listener : myTextListeners) {
+        final TextChangedEvent changedEvent = new TextChangedEvent(this);
+        for (final TextChangeListener listener : myTextListeners) {
             listener.textSet(changedEvent);
         }
     }
@@ -160,13 +160,13 @@ final class DisplayedContent implements StyledTextContent {
      * @param text    to replace new empty lines. Its size determines the number of lines to shift
      * @param forward shifts lines either forward or backward
      */
-    void shiftLines(String text, boolean forward) {
+    void shiftLines(final String text, final boolean forward) {
         if (text.length() == 0) {
             return;
         }
 
-        int linesInText = (text.length() - 1) / numberOfColumns + 1;
-        int currentLimit = Math.min(myData.length(), linesTimesColumns);
+        final int linesInText = (text.length() - 1) / numberOfColumns + 1;
+        final int currentLimit = Math.min(myData.length(), linesTimesColumns);
         TextChangingEvent event = new TextChangingEvent(this);
         event.start = forward ? 0 : currentLimit;
         event.newText = text;
@@ -175,14 +175,14 @@ final class DisplayedContent implements StyledTextContent {
         event.replaceLineCount = 0;
         event.newLineCount = linesInText;
 
-        for (TextChangeListener listener : myTextListeners) {
+        for (final TextChangeListener listener : myTextListeners) {
             listener.textChanging(event);
         }
         myData.insert(event.start, text);
         Log.trace(this, "Event 1: start={0}, newCharCount={1}, newLineCount={2}", event.start, event.newCharCount, event.newLineCount);
 
         TextChangedEvent changedEvent = new TextChangedEvent(this);
-        for (TextChangeListener listener : myTextListeners) {
+        for (final TextChangeListener listener : myTextListeners) {
             listener.textChanged(changedEvent);
         }
 
@@ -194,7 +194,7 @@ final class DisplayedContent implements StyledTextContent {
         event.newCharCount = 0;
         event.replaceLineCount = linesInText;
         event.newLineCount = 0;
-        for (TextChangeListener listener : myTextListeners) {
+        for (final TextChangeListener listener : myTextListeners) {
             listener.textChanging(event);
         }
 
@@ -206,7 +206,7 @@ final class DisplayedContent implements StyledTextContent {
         Log.trace(this, "Event 2: start={0}, newCharCount={1}, newLineCount={2}", event.start, event.newCharCount, event.newLineCount);
 
         changedEvent = new TextChangedEvent(this);
-        for (TextChangeListener listener : myTextListeners) {
+        for (final TextChangeListener listener : myTextListeners) {
             listener.textChanged(changedEvent);
         }
     }

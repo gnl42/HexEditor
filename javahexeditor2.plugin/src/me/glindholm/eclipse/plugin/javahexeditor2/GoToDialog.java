@@ -21,8 +21,6 @@
 package me.glindholm.eclipse.plugin.javahexeditor2;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FormAttachment;
@@ -65,7 +63,7 @@ final class GoToDialog extends Dialog {
 
     SelectionAdapter defaultSelectionAdapter = new SelectionAdapter() {
         @Override
-        public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+        public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
             text.setFocus();
         }
     };
@@ -78,7 +76,7 @@ final class GoToDialog extends Dialog {
     long limit = -1L;
     long tempResult = -1L;
 
-    public GoToDialog(Shell aShell) {
+    public GoToDialog(final Shell aShell) {
         super(aShell);
         lastLocationText = Texts.EMPTY;
     }
@@ -87,7 +85,7 @@ final class GoToDialog extends Dialog {
      * This method initializes composite
      */
     private void createComposite() {
-        RowLayout rowLayout1 = new RowLayout();
+        final RowLayout rowLayout1 = new RowLayout();
         // rowLayout1.marginHeight = 5;
         rowLayout1.marginTop = 2;
         rowLayout1.marginBottom = 2;
@@ -96,9 +94,9 @@ final class GoToDialog extends Dialog {
         composite = new Composite(composite1, SWT.NONE);
         composite.setLayout(rowLayout1);
 
-        SelectionAdapter hexTextSelectionAdapter = new SelectionAdapter() {
+        final SelectionAdapter hexTextSelectionAdapter = new SelectionAdapter() {
             @Override
-            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
                 text.setText(text.getText()); // generate event
                 lastHexButtonSelected = e.widget == hexRadioButton;
                 /*
@@ -150,14 +148,14 @@ final class GoToDialog extends Dialog {
      *
      */
     private void createComposite2() {
-        RowLayout rowLayout1 = new RowLayout();
+        final RowLayout rowLayout1 = new RowLayout();
         rowLayout1.type = org.eclipse.swt.SWT.VERTICAL;
         rowLayout1.marginHeight = 10;
         rowLayout1.marginWidth = 10;
         rowLayout1.fill = true;
 
         composite2 = new Composite(shell, SWT.NONE);
-        FormData formData = new FormData();
+        final FormData formData = new FormData();
         formData.left = new FormAttachment(composite1);
         formData.right = new FormAttachment(100);
         composite2.setLayoutData(formData);
@@ -168,7 +166,7 @@ final class GoToDialog extends Dialog {
         showButton.addSelectionListener(defaultSelectionAdapter);
         showButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
             @Override
-            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
                 buttonPressed = 1;
                 saveResultAndClose();
             }
@@ -179,7 +177,7 @@ final class GoToDialog extends Dialog {
         gotoButton.addSelectionListener(defaultSelectionAdapter);
         gotoButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
             @Override
-            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
                 buttonPressed = 2;
                 saveResultAndClose();
             }
@@ -189,7 +187,7 @@ final class GoToDialog extends Dialog {
         closeButton.setText(Texts.BUTTON_CLOSE_LABEL);
         closeButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
             @Override
-            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
                 shell.close();
             }
         });
@@ -201,42 +199,39 @@ final class GoToDialog extends Dialog {
      * This method initializes composite1
      */
     private void createComposite1() {
-        GridLayout gridLayout = new GridLayout();
+        final GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         composite1 = new Composite(shell, SWT.NONE);
         composite1.setLayout(gridLayout);
         createComposite();
         text = new Text(composite1, SWT.BORDER | SWT.SINGLE);
         text.setTextLimit(30);
-        int columns = 35;
-        GC gc = new GC(text);
-        int width = (int) (columns * SWTUtility.getAverageCharacterWidth(gc));
+        final int columns = 35;
+        final GC gc = new GC(text);
+        final int width = (int) (columns * SWTUtility.getAverageCharacterWidth(gc));
         gc.dispose();
         text.setLayoutData(new GridData(width, SWT.DEFAULT));
-        text.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                String newText = text.getText();
-                tempResult = NumberUtility.parseString(hexRadioButton.getSelection(), newText);
+        text.addModifyListener(e -> {
+            final String newText = text.getText();
+            tempResult = NumberUtility.parseString(hexRadioButton.getSelection(), newText);
 
-                if (tempResult >= 0L && tempResult <= limit) {
-                    showButton.setEnabled(true);
-                    gotoButton.setEnabled(true);
+            if (tempResult >= 0L && tempResult <= limit) {
+                showButton.setEnabled(true);
+                gotoButton.setEnabled(true);
+                label2.setText(Texts.EMPTY);
+            } else {
+                showButton.setEnabled(false);
+                gotoButton.setEnabled(false);
+                if (Texts.EMPTY.equals(newText)) {
                     label2.setText(Texts.EMPTY);
+                } else if (tempResult < 0) {
+                    label2.setText(Texts.DIALOG_ERROR_NOT_A_NUMBER_MESSAGE);
                 } else {
-                    showButton.setEnabled(false);
-                    gotoButton.setEnabled(false);
-                    if (Texts.EMPTY.equals(newText)) {
-                        label2.setText(Texts.EMPTY);
-                    } else if (tempResult < 0) {
-                        label2.setText(Texts.DIALOG_ERROR_NOT_A_NUMBER_MESSAGE);
-                    } else {
-                        label2.setText(Texts.DIALOG_ERROR_LOCATION_OUT_OF_RANGE_MESSAGE);
-                    }
+                    label2.setText(Texts.DIALOG_ERROR_LOCATION_OUT_OF_RANGE_MESSAGE);
                 }
             }
         });
-        FormData formData = new FormData();
+        final FormData formData = new FormData();
         formData.top = new FormAttachment(label);
         composite1.setLayoutData(formData);
     }
@@ -247,19 +242,19 @@ final class GoToDialog extends Dialog {
     private void createShell() {
         shell = new Shell(getParent(), SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
         shell.setText(Texts.GOTO_DIALOG_GOTO_LOCATION_SHELL_LABEL);
-        FormLayout formLayout = new FormLayout();
+        final FormLayout formLayout = new FormLayout();
         formLayout.marginHeight = 3;
         formLayout.marginWidth = 3;
         shell.setLayout(formLayout);
         label = new Label(shell, SWT.NONE);
-        FormData formData = new FormData();
+        final FormData formData = new FormData();
         formData.left = new FormAttachment(0, 5);
         formData.right = new FormAttachment(100);
         label.setLayoutData(formData);
         createComposite1();
         createComposite2();
         label2 = new Label(shell, SWT.CENTER);
-        FormData formData2 = new FormData();
+        final FormData formData2 = new FormData();
         formData2.left = new FormAttachment(0);
         formData2.right = new FormAttachment(100);
         formData2.top = new FormAttachment(composite1);
@@ -267,7 +262,7 @@ final class GoToDialog extends Dialog {
         label2.setLayoutData(formData2);
     }
 
-    public long open(Shell parentShell, long limit) {
+    public long open(final Shell parentShell, final long limit) {
         this.limit = limit;
         finalResult = -1L;
         buttonPressed = 0;
@@ -286,7 +281,7 @@ final class GoToDialog extends Dialog {
         text.selectAll();
         text.setFocus();
         shell.open();
-        Display display = getParent().getDisplay();
+        final Display display = getParent().getDisplay();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();

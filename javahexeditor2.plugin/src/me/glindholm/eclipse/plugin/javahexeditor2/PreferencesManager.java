@@ -31,8 +31,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -59,9 +57,9 @@ public final class PreferencesManager {
 
     private static final int itemsDisplayed = 9; // Number of font names
     // displayed in list
-    private static final Set<Integer> scalableSizes = new TreeSet<Integer>(Arrays.asList(new Integer[] { Integer.valueOf(6), Integer.valueOf(7),
-            Integer.valueOf(8), Integer.valueOf(9), Integer.valueOf(10), Integer.valueOf(11), Integer.valueOf(12), Integer.valueOf(13), Integer.valueOf(14),
-            Integer.valueOf(16), Integer.valueOf(18), Integer.valueOf(22), Integer.valueOf(32), Integer.valueOf(72) }));
+    private static final Set<Integer> scalableSizes = new TreeSet<>(Arrays.asList(6, Integer.valueOf(7), Integer.valueOf(8),
+            Integer.valueOf(9), Integer.valueOf(10), Integer.valueOf(11), Integer.valueOf(12), Integer.valueOf(13), Integer.valueOf(14), Integer.valueOf(16),
+            Integer.valueOf(18), Integer.valueOf(22), Integer.valueOf(32), Integer.valueOf(72)));
 
     int dialogResult = SWT.CANCEL;
     private List<FontData> fontsListCurrent;
@@ -69,7 +67,7 @@ public final class PreferencesManager {
     private List<FontData> fontsScalable;
     private GC fontsGc;
     private Set<String> fontsRejected;
-    private Map<String, Set<Integer>> fontsSorted;
+    private final Map<String, Set<Integer>> fontsSorted;
     FontData initialFontData;
     FontData sampleFontData;
 
@@ -93,7 +91,7 @@ public final class PreferencesManager {
     private Label label3;
     Shell shell;
 
-    public static int fontStyleToInt(String styleString) {
+    public static int fontStyleToInt(final String styleString) {
         int style = SWT.NORMAL;
         if (Texts.PREFERENCES_MANAGER_FONT_STYLE_BOLD.equals(styleString)) {
             style = SWT.BOLD;
@@ -106,22 +104,18 @@ public final class PreferencesManager {
         return style;
     }
 
-    public static String fontStyleToString(int style) {
-        switch (style) {
-        case SWT.BOLD:
-            return Texts.PREFERENCES_MANAGER_FONT_STYLE_BOLD;
-        case SWT.ITALIC:
-            return Texts.PREFERENCES_MANAGER_FONT_STYLE_ITALIC;
-        case SWT.BOLD | SWT.ITALIC:
-            return Texts.PREFERENCES_MANAGER_FONT_STYLE_BOLD_ITALIC;
-        default:
-            return Texts.PREFERENCES_MANAGER_FONT_STYLE_REGULAR;
-        }
+    public static String fontStyleToString(final int style) {
+        return switch (style) {
+        case SWT.BOLD -> Texts.PREFERENCES_MANAGER_FONT_STYLE_BOLD;
+        case SWT.ITALIC -> Texts.PREFERENCES_MANAGER_FONT_STYLE_ITALIC;
+        case SWT.BOLD | SWT.ITALIC -> Texts.PREFERENCES_MANAGER_FONT_STYLE_BOLD_ITALIC;
+        default -> Texts.PREFERENCES_MANAGER_FONT_STYLE_REGULAR;
+        };
     }
 
-    public PreferencesManager(FontData fontData) {
+    public PreferencesManager(final FontData fontData) {
         initialFontData = sampleFontData = fontData;
-        fontsSorted = new TreeMap<String, Set<Integer>>();
+        fontsSorted = new TreeMap<>();
     }
 
     /**
@@ -129,11 +123,11 @@ public final class PreferencesManager {
      */
     private void createComposite() {
         composite = new Composite(parent, SWT.NONE);
-        GridLayout gridLayout = new GridLayout();
+        final GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 3;
         composite.setLayout(gridLayout);
 
-        GridData gridData = new GridData();
+        final GridData gridData = new GridData();
         gridData.horizontalSpan = 3;
         label1 = new Label(composite, SWT.NONE);
         label1.setText(Texts.PREFERENCES_MANAGER_FONT_NAME);
@@ -143,31 +137,31 @@ public final class PreferencesManager {
         label3.setText(Texts.PREFERENCES_MANAGER_FONT_SIZE);
 
         text = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        GridData gridData4 = new GridData();
+        final GridData gridData4 = new GridData();
         gridData4.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         text.setLayoutData(gridData4);
         text1 = new Text(composite, SWT.BORDER);
-        GridData gridData5 = new GridData();
+        final GridData gridData5 = new GridData();
         gridData5.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         text1.setLayoutData(gridData5);
         text1.setEnabled(false);
         text2 = new Text(composite, SWT.BORDER);
-        GridData gridData6 = new GridData();
+        final GridData gridData6 = new GridData();
         gridData6.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
-        GC gc = new GC(composite);
-        double averageCharWidth = SWTUtility.getAverageCharacterWidth(gc);
+        final GC gc = new GC(composite);
+        final double averageCharWidth = SWTUtility.getAverageCharacterWidth(gc);
         gc.dispose();
         gridData6.widthHint = (int) (averageCharWidth * 6);
         text2.setLayoutData(gridData6);
 
         list = new org.eclipse.swt.widgets.List(composite, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
-        GridData gridData52 = new GridData();
+        final GridData gridData52 = new GridData();
         gridData52.heightHint = itemsDisplayed * list.getItemHeight();
         gridData52.widthHint = (int) (averageCharWidth * 40);
         list.setLayoutData(gridData52);
         list.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 text.setText(list.getSelection()[0]);
                 updateSizeItemsAndGuessSelected();
                 updateAndRefreshSample();
@@ -175,12 +169,12 @@ public final class PreferencesManager {
         });
 
         list1 = new org.eclipse.swt.widgets.List(composite, SWT.SINGLE | SWT.BORDER);
-        GridData gridData21 = new GridData();
+        final GridData gridData21 = new GridData();
         gridData21.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
-        String[] texts = new String[] { Texts.PREFERENCES_MANAGER_FONT_STYLE_REGULAR, Texts.PREFERENCES_MANAGER_FONT_STYLE_BOLD,
+        final String[] texts = { Texts.PREFERENCES_MANAGER_FONT_STYLE_REGULAR, Texts.PREFERENCES_MANAGER_FONT_STYLE_BOLD,
                 Texts.PREFERENCES_MANAGER_FONT_STYLE_ITALIC, Texts.PREFERENCES_MANAGER_FONT_STYLE_BOLD_ITALIC };
         int maxLenght = 0;
-        for (String text : texts) {
+        for (final String text : texts) {
             maxLenght = Math.max(maxLenght, text.length());
         }
         gridData21.widthHint = (int) (averageCharWidth * maxLenght * 2);
@@ -188,20 +182,20 @@ public final class PreferencesManager {
         list1.setItems(texts);
         list1.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 text1.setText(list1.getSelection()[0]);
                 updateAndRefreshSample();
             }
         });
 
         list2 = new org.eclipse.swt.widgets.List(composite, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
-        GridData gridData7 = new GridData();
+        final GridData gridData7 = new GridData();
         gridData7.widthHint = gridData6.widthHint;
         gridData7.heightHint = gridData52.heightHint;
         list2.setLayoutData(gridData7);
         list2.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 text2.setText(list2.getSelection()[0]);
                 updateAndRefreshSample();
             }
@@ -209,26 +203,23 @@ public final class PreferencesManager {
         sampleText = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
         sampleText.setText(Texts.PREFERENCES_MANAGER_SAMPLE_TEXT);
         sampleText.setEditable(false);
-        GridData gridData8 = new GridData();
+        final GridData gridData8 = new GridData();
         gridData8.horizontalSpan = 3;
         gridData8.widthHint = gridData52.widthHint + gridData21.widthHint + gridData7.widthHint + gridLayout.horizontalSpacing * 2;
         gridData8.heightHint = 50;
         gridData8.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         sampleText.setLayoutData(gridData8);
-        sampleText.addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                if (sampleFont != null && !sampleFont.isDisposed()) {
-                    sampleFont.dispose();
-                }
+        sampleText.addDisposeListener(e -> {
+            if (sampleFont != null && !sampleFont.isDisposed()) {
+                sampleFont.dispose();
             }
         });
     }
 
     private void createCompositeOkCancel() {
-        GridData gridData = new GridData();
+        final GridData gridData = new GridData();
         gridData.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
-        RowLayout rowLayout1 = new RowLayout();
+        final RowLayout rowLayout1 = new RowLayout();
         rowLayout1.type = org.eclipse.swt.SWT.HORIZONTAL;
         rowLayout1.marginHeight = 10;
         rowLayout1.marginWidth = 10;
@@ -241,7 +232,7 @@ public final class PreferencesManager {
         resetButton.setText(Texts.BUTTON_RESET_LABEL);
         resetButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 setFontData(null);
             }
         });
@@ -250,7 +241,7 @@ public final class PreferencesManager {
         okButton.setText(Texts.BUTTON_OK_LABEL);
         okButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 initialFontData = sampleFontData;
                 dialogResult = SWT.OK;
                 shell.close();
@@ -261,7 +252,7 @@ public final class PreferencesManager {
         cancelButton.setText(Texts.BUTTON_CANCEL_LABEL);
         cancelButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 sampleFontData = initialFontData;
                 dialogResult = SWT.CANCEL;
                 shell.close();
@@ -269,9 +260,9 @@ public final class PreferencesManager {
         });
     }
 
-    private void createShell(Shell parentShell) {
+    private void createShell(final Shell parentShell) {
         shell = new Shell(parentShell, SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
-        GridLayout gridLayout1 = new GridLayout();
+        final GridLayout gridLayout1 = new GridLayout();
         gridLayout1.marginHeight = 3;
         gridLayout1.marginWidth = 3;
         shell.setLayout(gridLayout1);
@@ -287,7 +278,7 @@ public final class PreferencesManager {
      * @param parent composite where preferences will be drawn
      * @return
      */
-    public Composite createPreferencesPart(Composite parent) {
+    public Composite createPreferencesPart(final Composite parent) {
         this.parent = parent;
         createComposite();
         if (fontsSorted.size() < 1) {
@@ -328,11 +319,11 @@ public final class PreferencesManager {
 
     int getSize() {
         int size = 0;
-        String text = text2.getText();
+        final String text = text2.getText();
         if (!text.isEmpty()) {
             try {
                 size = Integer.parseInt(text);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             } // was not a number, keep it 0
         }
         // bugfix: HexText's raw array overflows when font is very small and
@@ -352,14 +343,14 @@ public final class PreferencesManager {
      * @param parentShell
      * @return SWT.OK or SWT.CANCEL
      */
-    public int openDialog(Shell parentShell) {
+    public int openDialog(final Shell parentShell) {
         dialogResult = SWT.CANCEL; // when user presses escape
         if (shell == null || shell.isDisposed()) {
             createShell(parentShell);
         }
         SWTUtility.placeInCenterOf(shell, parentShell);
         shell.open();
-        Display display = parent.getDisplay();
+        final Display display = parent.getDisplay();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
@@ -370,8 +361,8 @@ public final class PreferencesManager {
     }
 
     void populateFixedCharWidthFonts() {
-        fontsNonScalable = new ArrayList<FontData>(Arrays.asList(Display.getCurrent().getFontList(null, false)));
-        fontsScalable = new ArrayList<FontData>(Arrays.asList(Display.getCurrent().getFontList(null, true)));
+        fontsNonScalable = new ArrayList<>(Arrays.asList(Display.getCurrent().getFontList(null, false)));
+        fontsScalable = new ArrayList<>(Arrays.asList(Display.getCurrent().getFontList(null, true)));
         if (fontsNonScalable.size() == 0 && fontsScalable.size() == 0) {
             fontsNonScalable = null;
             fontsScalable = null;
@@ -379,27 +370,22 @@ public final class PreferencesManager {
             return;
         }
         fontsListCurrent = fontsNonScalable;
-        fontsRejected = new HashSet<String>();
+        fontsRejected = new HashSet<>();
         fontsGc = new GC(parent);
-        Display.getCurrent().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                populateFixedCharWidthFontsAsync();
-            }
-        });
+        Display.getCurrent().asyncExec(() -> populateFixedCharWidthFontsAsync());
     }
 
     void populateFixedCharWidthFontsAsync() {
-        FontData aData = getNextFontData();
+        final FontData aData = getNextFontData();
         if (!fontsRejected.contains(aData.getName())) {
-            boolean isScalable = fontsListCurrent == fontsScalable;
+            final boolean isScalable = fontsListCurrent == fontsScalable;
             int height = 10;
             if (!isScalable) {
                 height = aData.getHeight();
             }
-            Font font = new Font(Display.getCurrent(), aData.getName(), height, SWT.NORMAL);
+            final Font font = new Font(Display.getCurrent(), aData.getName(), height, SWT.NORMAL);
             fontsGc.setFont(font);
-            int width = fontsGc.getAdvanceWidth((char) 0x020);
+            final int width = fontsGc.getAdvanceWidth((char) 0x020);
             boolean isFixedWidth = true;
             for (int j = 0x021; j < 0x0100 && isFixedWidth; ++j) {
                 if (HexTexts.byteToChar[j] == '.' && j != '.') {
@@ -416,10 +402,10 @@ public final class PreferencesManager {
                 } else {
                     Set<Integer> heights = fontsSorted.get(aData.getName());
                     if (heights == null) {
-                        heights = new TreeSet<Integer>();
+                        heights = new TreeSet<>();
                         fontsSorted.put(aData.getName(), heights);
                     }
-                    heights.add(Integer.valueOf(aData.getHeight()));
+                    heights.add(aData.getHeight());
                 }
                 if (!list.isDisposed()) {
                     list.setItems(fontsSorted.keySet().toArray(new String[0]));
@@ -437,12 +423,7 @@ public final class PreferencesManager {
             fontsNonScalable = fontsScalable = fontsListCurrent = null;
             fontsRejected = null;
         } else {
-            Display.getCurrent().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    populateFixedCharWidthFontsAsync();
-                }
-            });
+            Display.getCurrent().asyncExec(() -> populateFixedCharWidthFontsAsync());
         }
     }
 
@@ -489,8 +470,8 @@ public final class PreferencesManager {
         refreshWidgets();
     }
 
-    void showSelected(org.eclipse.swt.widgets.List aList, String item) {
-        int selected = aList.indexOf(item);
+    void showSelected(final org.eclipse.swt.widgets.List aList, final String item) {
+        final int selected = aList.indexOf(item);
         if (selected >= 0) {
             aList.setSelection(selected);
             aList.setTopIndex(Math.max(0, selected - itemsDisplayed + 1));
@@ -506,25 +487,25 @@ public final class PreferencesManager {
     }
 
     void updateSizeItems() {
-        Set<Integer> sizes = fontsSorted.get(text.getText());
+        final Set<Integer> sizes = fontsSorted.get(text.getText());
         if (sizes == null) {
             list2.removeAll();
             return;
         }
-        String[] items = new String[sizes.size()];
+        final String[] items = new String[sizes.size()];
         int i = 0;
-        for (Iterator<Integer> j = sizes.iterator(); i < items.length; ++i) {
+        for (final Iterator<Integer> j = sizes.iterator(); i < items.length; ++i) {
             items[i] = j.next().toString();
         }
         list2.setItems(items);
     }
 
     void updateSizeItemsAndGuessSelected() {
-        int lastSize = getSize();
+        final int lastSize = getSize();
         updateSizeItems();
 
         int position = 0;
-        String[] items = list2.getItems();
+        final String[] items = list2.getItems();
         for (int i = 1; i < items.length; ++i) {
             if (lastSize >= Integer.parseInt(items[i])) {
                 position = i;

@@ -46,15 +46,15 @@ public final class HexEditorPreferencesPage extends PreferencePage implements IW
     private PreferencesManager preferences;
 
     @Override
-    protected Control createContents(Composite parent) {
-        FontData fontData = HexEditorPreferences.getFontData();
+    protected Control createContents(final Composite parent) {
+        final FontData fontData = HexEditorPreferences.getFontData();
         preferences = new PreferencesManager(fontData);
 
         return preferences.createPreferencesPart(parent);
     }
 
     @Override
-    public void init(IWorkbench workbench) {
+    public void init(final IWorkbench workbench) {
     }
 
     @Override
@@ -65,8 +65,8 @@ public final class HexEditorPreferencesPage extends PreferencePage implements IW
 
     @Override
     public boolean performOk() {
-        IPreferenceStore store = HexEditorPlugin.getDefault().getPreferenceStore();
-        FontData fontData = preferences.getFontData();
+        final IPreferenceStore store = HexEditorPlugin.getDefault().getPreferenceStore();
+        final FontData fontData = preferences.getFontData();
         store.setValue(Preferences.FONT_NAME, fontData.getName());
         store.setValue(Preferences.FONT_STYLE, fontData.getStyle());
         store.setValue(Preferences.FONT_SIZE, fontData.getHeight());
@@ -74,7 +74,7 @@ public final class HexEditorPreferencesPage extends PreferencePage implements IW
 
         try {
             InstanceScope.INSTANCE.getNode(HexEditorPlugin.ID).flush();
-        } catch (BackingStoreException ex) {
+        } catch (final BackingStoreException ex) {
 
             throw new RuntimeException("Cannot store preferences for plugin '" + HexEditorPlugin.ID + "'", ex);
         }

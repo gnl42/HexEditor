@@ -57,23 +57,23 @@ public final class NumberUtility {
         NumberUtility.hexPrefix = hexPrefix;
     }
 
-    public static String getDecimalString(long value) {
+    public static String getDecimalString(final long value) {
         return Long.toString(value);
     }
 
-    public static String getHexString(long value) {
+    public static String getHexString(final long value) {
         return hexPrefix + Long.toHexString(value).toUpperCase();
     }
 
-    public static String getDecimalAndHexString(long value) {
+    public static String getDecimalAndHexString(final long value) {
         return getDecimalString(value) + " (" + getHexString(value) + ")";
     }
 
-    public static String getDecimalAndHexRangeString(long from, long to) {
+    public static String getDecimalAndHexRangeString(final long from, final long to) {
         return getDecimalString(from) + " - " + getDecimalString(to) + " (" + getHexString(from) + " - " + getHexString(to) + ")";
     }
 
-    public static long parseString(boolean hex, String value) {
+    public static long parseString(final boolean hex, String value) {
         int radix = 10;
         Matcher numberMatcher;
         if (hex) {

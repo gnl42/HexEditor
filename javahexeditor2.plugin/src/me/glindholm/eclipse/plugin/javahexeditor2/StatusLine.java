@@ -50,47 +50,47 @@ final class StatusLine extends Composite {
      * @param style             not used
      * @param withLeftSeparator so it can be put besides other status items (for plugin)
      */
-    public StatusLine(Composite parent, int style, boolean withLeftSeparator) {
+    public StatusLine(final Composite parent, final int style, final boolean withLeftSeparator) {
         super(parent, style);
         initialize(withLeftSeparator);
     }
 
-    private void initialize(boolean withSeparator) {
+    private void initialize(final boolean withSeparator) {
 
         // From Eclipse 3.1's GridData javadoc:
         // NOTE: Do not reuse GridData objects.
         // Every control in a Composite that is
         // managed by a GridLayout must have a unique GridData instance
-        GridLayout statusLayout = new GridLayout();
+        final GridLayout statusLayout = new GridLayout();
         statusLayout.numColumns = withSeparator ? 8 : 7;
         statusLayout.marginHeight = 0;
         setLayout(statusLayout);
 
         if (withSeparator) {
-            Label separator1 = new Label(this, SWT.SEPARATOR);
+            final Label separator1 = new Label(this, SWT.SEPARATOR);
             separator1.setLayoutData(createGridData());
         }
 
-        long MAX_FILE_SIZE = 0; // Use a reasonable value to not waste space
+        final long MAX_FILE_SIZE = 0; // Use a reasonable value to not waste space
         positionLabel = new Label(this, SWT.SHADOW_NONE);
         positionLabel.setLayoutData(createGridData());
         updatePositionWidth(MAX_FILE_SIZE);
 
-        Label separator2 = new Label(this, SWT.SEPARATOR);
+        final Label separator2 = new Label(this, SWT.SEPARATOR);
         separator2.setLayoutData(createGridData());
 
         valueLabel = new Label(this, SWT.SHADOW_NONE);
         int maxLength = getValueText(Byte.MAX_VALUE).length();
         valueLabel.setLayoutData(createGridData(maxLength));
 
-        Label separator3 = new Label(this, SWT.SEPARATOR);
+        final Label separator3 = new Label(this, SWT.SEPARATOR);
         separator3.setLayoutData(createGridData());
 
         insertModeLabel = new Label(this, SWT.SHADOW_NONE);
         maxLength = Math.max(Texts.STATUS_LINE_MODE_INSERT.length(), Texts.STATUS_LINE_MODE_OVERWRITE.length());
         insertModeLabel.setLayoutData(createGridData(maxLength));
 
-        Label separator4 = new Label(this, SWT.SEPARATOR);
+        final Label separator4 = new Label(this, SWT.SEPARATOR);
         separator4.setLayoutData(createGridData());
 
         sizeLabel = new Label(this, SWT.SHADOW_NONE);
@@ -99,24 +99,24 @@ final class StatusLine extends Composite {
 
     }
 
-    private int getWidthHint(int maxLength) {
-        GC gc = new GC(this);
-        int widthHint = (int) (maxLength * SWTUtility.getAverageCharacterWidth(gc));
+    private int getWidthHint(final int maxLength) {
+        final GC gc = new GC(this);
+        final int widthHint = (int) (maxLength * SWTUtility.getAverageCharacterWidth(gc));
         gc.dispose();
 
         return widthHint;
     }
 
     private GridData createGridData() {
-        GridData gridData = new GridData();
+        final GridData gridData = new GridData();
         gridData.grabExcessVerticalSpace = true;
         gridData.widthHint = 1;
         return gridData;
     }
 
-    private GridData createGridData(int maxLength) {
-        int width = getWidthHint(maxLength);
-        GridData gridData = new GridData(width, SWT.DEFAULT);
+    private GridData createGridData(final int maxLength) {
+        final int width = getWidthHint(maxLength);
+        final GridData gridData = new GridData(width, SWT.DEFAULT);
         gridData.grabExcessVerticalSpace = true;
 
         return gridData;
@@ -127,7 +127,7 @@ final class StatusLine extends Composite {
      *
      * @param insert <code>true</code> for insert mode, or <code>false</code> for overwrite
      */
-    public void updateInsertMode(boolean insert) {
+    public void updateInsertMode(final boolean insert) {
         if (isDisposed() || insertModeLabel.isDisposed()) {
             return;
         }
@@ -145,12 +145,12 @@ final class StatusLine extends Composite {
         positionLabel.setText(Texts.EMPTY);
     }
 
-    public void updatePositionWidth(long size) {
+    public void updatePositionWidth(final long size) {
         if (isDisposed() || positionLabel.isDisposed()) {
             return;
         }
-        long sizeMinusOne = (size > 1 ? size - 1 : size);
-        int maxLength = Math.max(getPositionText(size).length(), getSelectionText(new RangeSelection(sizeMinusOne, size)).length()) + 2;
+        final long sizeMinusOne = size > 1 ? size - 1 : size;
+        final int maxLength = Math.max(getPositionText(size).length(), getSelectionText(new RangeSelection(sizeMinusOne, size)).length()) + 2;
         ((GridData) positionLabel.getLayoutData()).widthHint = getWidthHint(maxLength);
     }
 
@@ -159,7 +159,7 @@ final class StatusLine extends Composite {
      *
      * @param position position to display
      */
-    public void updatePosition(long position) {
+    public void updatePosition(final long position) {
         if (position < 0) {
             throw new IllegalArgumentException("Parameter 'position' must not be negative.");
         }
@@ -169,8 +169,8 @@ final class StatusLine extends Composite {
         positionLabel.setText(getPositionText(position));
     }
 
-    private String getPositionText(long position) {
-        String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_POSITION, NumberUtility.getDecimalAndHexString(position));
+    private String getPositionText(final long position) {
+        final String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_POSITION, NumberUtility.getDecimalAndHexString(position));
         return text;
     }
 
@@ -179,7 +179,7 @@ final class StatusLine extends Composite {
      *
      * @param rangeSelection selection array to display: [0] = start, [1] = end
      */
-    public void updateSelection(RangeSelection rangeSelection) {
+    public void updateSelection(final RangeSelection rangeSelection) {
         if (rangeSelection == null) {
             throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
         }
@@ -191,11 +191,11 @@ final class StatusLine extends Composite {
         positionLabel.setText(getSelectionText(rangeSelection));
     }
 
-    private String getSelectionText(RangeSelection rangeSelection) {
+    private String getSelectionText(final RangeSelection rangeSelection) {
         if (rangeSelection == null) {
             throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
         }
-        String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_SELECTION,
+        final String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_SELECTION,
                 NumberUtility.getDecimalAndHexRangeString(rangeSelection.start, rangeSelection.end));
         return text;
     }
@@ -215,28 +215,28 @@ final class StatusLine extends Composite {
      *
      * @param value value to display
      */
-    public void updateValue(byte value) {
+    public void updateValue(final byte value) {
         if (isDisposed() || valueLabel.isDisposed()) {
             return;
         }
         valueLabel.setText(getValueText(value));
     }
 
-    private String getValueText(byte value) {
-        int unsignedValue = value & 0xff;
+    private String getValueText(final byte value) {
+        final int unsignedValue = value & 0xff;
         String binaryText = "0000000" + Integer.toBinaryString(unsignedValue);
         binaryText = binaryText.substring(binaryText.length() - 8);
 
-        String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_VALUE, NumberUtility.getDecimalString(unsignedValue),
+        final String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_VALUE, NumberUtility.getDecimalString(unsignedValue),
                 NumberUtility.getHexString(unsignedValue), binaryText);
         return text;
     }
 
-    public void updateSizeWidth(long size) {
+    public void updateSizeWidth(final long size) {
         if (isDisposed() || sizeLabel.isDisposed()) {
             return;
         }
-        int maxLength = getSizeText(size).length() + 1;
+        final int maxLength = getSizeText(size).length() + 1;
         ((GridData) sizeLabel.getLayoutData()).widthHint = getWidthHint(maxLength);
     }
 
@@ -255,7 +255,7 @@ final class StatusLine extends Composite {
      *
      * @param size size to display
      */
-    public void updateSize(long size) {
+    public void updateSize(final long size) {
         if (size < 0) {
             throw new IllegalArgumentException("Parameter 'size' must not be negative.");
         }
@@ -265,8 +265,8 @@ final class StatusLine extends Composite {
         sizeLabel.setText(getSizeText(size));
     }
 
-    private String getSizeText(long size) {
-        String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_SIZE, NumberUtility.getDecimalAndHexString(size));
+    private String getSizeText(final long size) {
+        final String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_SIZE, NumberUtility.getDecimalAndHexString(size));
         return text;
     }
 

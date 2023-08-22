@@ -42,10 +42,10 @@ import me.glindholm.eclipse.plugin.javahexeditor2.common.Log;
 final class BinaryContentActionHistory {
 
     public final static class Entry {
-        private Integer actionType;
-        private List<Range> ranges;
+        private final Integer actionType;
+        private final List<Range> ranges;
 
-        public Entry(Integer actionType, List<Range> ranges) {
+        public Entry(final Integer actionType, final List<Range> ranges) {
             if (actionType == null) {
                 throw new IllegalArgumentException("Parameter 'actionType' must not be null.");
             }
@@ -74,15 +74,15 @@ final class BinaryContentActionHistory {
     /**
      * Action types
      */
-    static final Integer TYPE_DELETE = Integer.valueOf(0);
-    static final Integer TYPE_INSERT = Integer.valueOf(1);
-    static final Integer TYPE_OVERWRITE = Integer.valueOf(2);
+    static final Integer TYPE_DELETE = 0;
+    static final Integer TYPE_INSERT = 1;
+    static final Integer TYPE_OVERWRITE = 2;
 
-    private BinaryContent content;
+    private final BinaryContent content;
     private Range myLastActionRange;
     private List<Integer> deletedList;
     private boolean isBackspace;
-    private List<Entry> myActions;
+    private final List<Entry> myActions;
     private int myActionsIndex;
     private List<Range> myCurrentActionRanges;
     private Integer myCurrentActionType;
@@ -98,21 +98,21 @@ final class BinaryContentActionHistory {
      *
      * @param content The new content, not <code>null</code>.
      */
-    public BinaryContentActionHistory(BinaryContent content) {
+    public BinaryContentActionHistory(final BinaryContent content) {
         if (content == null) {
             throw new IllegalArgumentException("Parameter 'content' must not be null.");
         }
         this.content = content;
-        myActions = new ArrayList<Entry>();
+        myActions = new ArrayList<>();
     }
 
     private long actionExclusiveEnd() {
         long result = 0L;
         if (myCurrentActionRanges != null && myCurrentActionRanges.size() > 0) {
-            Range highest = myCurrentActionRanges.get(myCurrentActionRanges.size() - 1);
+            final Range highest = myCurrentActionRanges.get(myCurrentActionRanges.size() - 1);
             result = highest.exclusiveEnd();
         }
-        long newRangeExclusiveEnd = newRangePosition + newRangeLength;
+        final long newRangeExclusiveEnd = newRangePosition + newRangeLength;
         if (newRangeExclusiveEnd > result) {
             result = newRangeExclusiveEnd;
         }
@@ -123,7 +123,7 @@ final class BinaryContentActionHistory {
     private long actionPosition() {
         long result = -1L;
         if (myCurrentActionRanges != null && myCurrentActionRanges.size() > 0) {
-            Range lowest = myCurrentActionRanges.get(0);
+            final Range lowest = myCurrentActionRanges.get(0);
             result = lowest.position;
         }
         if (result < 0 || newRangePosition >= 0 && newRangePosition < result) {
@@ -143,10 +143,10 @@ final class BinaryContentActionHistory {
      *                    block delete. When integerList.size() > 1 (a block delete for sure) isSingle
      *                    is ignored.
      */
-    public void addDeleted(long position, List<Integer> integerList, boolean isSingle) {
+    public void addDeleted(final long position, final List<Integer> integerList, final boolean isSingle) {
         if (integerList.size() > 1L || !isSingle) { // block delete
-            Range range = newRangeFromIntegerList(position, integerList);
-            List<Range> oneElementList = new ArrayList<Range>(1);
+            final Range range = newRangeFromIntegerList(position, integerList);
+            final List<Range> oneElementList = new ArrayList<>(1);
             oneElementList.add(range);
             addLostRanges(oneElementList);
         } else {
@@ -155,9 +155,9 @@ final class BinaryContentActionHistory {
         myPreviousTime = System.currentTimeMillis();
     }
 
-    public void addLostByte(long position, Integer integer) {
+    public void addLostByte(final long position, final Integer integer) {
         if (deletedList == null) {
-            deletedList = new ArrayList<Integer>();
+            deletedList = new ArrayList<>();
         }
 
         updateNewRange(position);
@@ -169,7 +169,7 @@ final class BinaryContentActionHistory {
         myPreviousTime = System.currentTimeMillis();
     }
 
-    public void addLostRange(Range aRange) {
+    public void addLostRange(final Range aRange) {
         if (myMergingSingles) {
             if (myMergedSinglesTop < 0L) {
                 myMergedSinglesTop = aRange.exclusiveEnd();
@@ -182,16 +182,16 @@ final class BinaryContentActionHistory {
         mergeRange(aRange);
     }
 
-    public void addLostRanges(List<Range> ranges) {
+    public void addLostRanges(final List<Range> ranges) {
         if (ranges == null) {
             return;
         }
-        for (int i = 0; i < ranges.size(); ++i) {
-            addLostRange(ranges.get(i));
+        for (final Range range : ranges) {
+            addLostRange(range);
         }
     }
 
-    public void addRangeToCurrentAction(Range range) {
+    public void addRangeToCurrentAction(final Range range) {
         if (actionPosition() <= range.position) {
             // they're == when ending an overwrite action
             myCurrentActionRanges.add(range);
@@ -206,7 +206,7 @@ final class BinaryContentActionHistory {
      *
      * @param range the range being inserted
      */
-    public void addInserted(Range range) {
+    public void addInserted(final Range range) {
         myCurrentActionRanges.add(range);
         endAction();
     }
@@ -240,7 +240,7 @@ final class BinaryContentActionHistory {
         if (myMergingSingles) {
             newRangeToCurrentAction();
         }
-        Entry entry = new Entry(myCurrentActionType, myCurrentActionRanges);
+        final Entry entry = new Entry(myCurrentActionType, myCurrentActionRanges);
         myActions.subList(myActionsIndex, myActions.size()).clear();
         myActions.add(entry);
         myActionsIndex = myActions.size();
@@ -261,7 +261,7 @@ final class BinaryContentActionHistory {
      * @param position
      * @param isSingle
      */
-    public void eventPreModify(Integer type, long position, boolean isSingle) {
+    public void eventPreModify(final Integer type, final long position, final boolean isSingle) {
         if (type != myCurrentActionType || !isSingle || System.currentTimeMillis() - myPreviousTime > MERGE_TIME
                 || (type == TYPE_INSERT || type == TYPE_OVERWRITE) && actionExclusiveEnd() != position
                 || type == TYPE_DELETE && actionPosition() != position && actionPosition() - 1L != position) {
@@ -287,34 +287,31 @@ final class BinaryContentActionHistory {
 
     private void dispose() {
         if (myActions != null) {
-            for (Iterator<Entry> i = myActions.iterator(); i.hasNext();) {
-                Entry entry = i.next();
-                List<Range> ranges = entry.getRanges();
+            for (final Entry entry : myActions) {
+                final List<Range> ranges = entry.getRanges();
                 disposeRanges(ranges);
             }
         }
         disposeRanges(myCurrentActionRanges);
     }
 
-    private void disposeRanges(List<Range> ranges) {
+    private void disposeRanges(final List<Range> ranges) {
         if (ranges == null) {
             return;
         }
 
-        for (Iterator<Range> j = ranges.iterator(); j.hasNext();) {
-            Range range = j.next();
-            if (range.data instanceof RandomAccessFile) {
-                RandomAccessFile randomAccessFile = (RandomAccessFile) range.data;
+        for (final Range range : ranges) {
+            if (range.data instanceof final RandomAccessFile randomAccessFile) {
                 try {
                     randomAccessFile.close();
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     Log.logError("Cannot close random access file '{0}'", new Object[] { range.file.getAbsolutePath() }, ex);
                 }
             }
         }
     }
 
-    private void mergeRange(Range range) {
+    private void mergeRange(final Range range) {
         if (myLastActionRange == null || myLastActionRange.data != range.data) {
             newRangeToCurrentAction();
             addRangeToCurrentAction(range);
@@ -336,18 +333,18 @@ final class BinaryContentActionHistory {
         }
     }
 
-    private ByteBuffer newBufferFromIntegerList(List<Integer> integerList) {
-        ByteBuffer store = ByteBuffer.allocate(integerList.size());
-        for (Iterator<Integer> iterator = integerList.iterator(); iterator.hasNext();) {
-            store.put((iterator.next()).byteValue());
+    private ByteBuffer newBufferFromIntegerList(final List<Integer> integerList) {
+        final ByteBuffer store = ByteBuffer.allocate(integerList.size());
+        for (final Iterator<Integer> iterator = integerList.iterator(); iterator.hasNext();) {
+            store.put(iterator.next().byteValue());
         }
         store.position(0);
 
         return store;
     }
 
-    private Range newRangeFromIntegerList(long position, List<Integer> integerList) {
-        ByteBuffer store = newBufferFromIntegerList(integerList);
+    private Range newRangeFromIntegerList(final long position, final List<Integer> integerList) {
+        final ByteBuffer store = newBufferFromIntegerList(integerList);
 
         return new Range(position, store, true);
     }
@@ -394,9 +391,9 @@ final class BinaryContentActionHistory {
      * @param type     one of TYPE_DELETE, TYPE_INSERT or TYPE_OVERWRITE
      * @param isSingle whether the action is a single byte or more
      */
-    private void startAction(Integer type, boolean isSingle) {
+    private void startAction(final Integer type, final boolean isSingle) {
         endAction();
-        myCurrentActionRanges = new ArrayList<Range>();
+        myCurrentActionRanges = new ArrayList<>();
         myCurrentActionType = type;
         myMergingSingles = isSingle;
     }
@@ -417,7 +414,7 @@ final class BinaryContentActionHistory {
         return myActions.get(myActionsIndex);
     }
 
-    private void updateNewRange(long position) {
+    private void updateNewRange(final long position) {
         if (newRangePosition < 0L) {
             newRangePosition = position;
             newRangeLength = 1L;

@@ -1,9 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: javahexeditor2.test
-Bundle-Vendor: javahexeditor2
-Bundle-SymbolicName: javahexeditor2.test
+Bundle-Name: me.glindholm.eclipse.plugin.javahexeditor2.test
+Bundle-Vendor: George Lindholm
+Bundle-SymbolicName: me.glindholm.eclipse.plugin.javahexeditor2.test
 Bundle-Version: 0.6.0.qualifier
+Import-Package: org.eclipse.swt,
+ org.eclipse.swt.custom,
+ org.eclipse.swt.widgets
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Require-Bundle: junit-jupiter-api
+Require-Bundle: me.glindholm.eclipse.plugin.javahexeditor2;bundle-version="0.6.0",
+ junit-jupiter-api;bundle-version="5.9.3"
 Automatic-Module-Name: javahexeditor2.test

@@ -33,7 +33,7 @@ public final class HexEditorPlugin extends AbstractUIPlugin {
     // The shared instance.
     private static HexEditorPlugin plugin;
 
-    private FindReplaceHistory findReplaceHistory;
+    private final FindReplaceHistory findReplaceHistory;
 
     /**
      * The constructor.
@@ -55,7 +55,7 @@ public final class HexEditorPlugin extends AbstractUIPlugin {
      * This method is called upon plug-in activation.
      */
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
 
@@ -82,7 +82,7 @@ public final class HexEditorPlugin extends AbstractUIPlugin {
      * This method is called when the plug-in is stopped.
      */
     @Override
-    public void stop(BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
         super.stop(context);
         plugin = null;
     }

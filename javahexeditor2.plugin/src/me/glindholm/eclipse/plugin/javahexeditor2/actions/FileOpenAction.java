@@ -30,39 +30,38 @@ public final class FileOpenAction implements IObjectActionDelegate {
      * Creation is public.
      */
     public FileOpenAction() {
-        super();
     }
 
     @Override
-    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+    public void setActivePart(final IAction action, final IWorkbenchPart targetPart) {
     }
 
     @Override
-    public void run(IAction action) {
+    public void run(final IAction action) {
 
         if (!isEnabled()) {
             throw new IllegalStateException("Action is not enabled");
         }
 
-        for (int i = 0; i < files.length; i++) {
+        for (final File file2 : files) {
 
-            if (files[i] == null) {
+            if (file2 == null) {
                 continue;
             }
 
-            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(files[i].getPath()));
+            final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(file2.getPath()));
 
             if (file == null) {
                 continue;
             }
-            IEditorInput editorInput = new FileEditorInput(file);
+            final IEditorInput editorInput = new FileEditorInput(file);
 
-            IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-            IWorkbenchPage page = window.getActivePage();
+            final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            final IWorkbenchPage page = window.getActivePage();
             try {
                 page.openEditor(editorInput, HexEditor.ID, true, org.eclipse.ui.IWorkbenchPage.MATCH_INPUT | org.eclipse.ui.IWorkbenchPage.MATCH_ID);
 
-            } catch (PartInitException ex) {
+            } catch (final PartInitException ex) {
                 throw new RuntimeException(ex);
             }
 
@@ -70,7 +69,7 @@ public final class FileOpenAction implements IObjectActionDelegate {
     }
 
     @Override
-    public void selectionChanged(IAction action, ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
         currentSelection = selection instanceof IStructuredSelection ? (IStructuredSelection) selection : null;
         action.setEnabled(isEnabled());
     }
@@ -78,10 +77,10 @@ public final class FileOpenAction implements IObjectActionDelegate {
     private boolean isEnabled() {
         boolean enabled = false;
         if (currentSelection != null) {
-            Object[] selectedObjects = currentSelection.toArray();
+            final Object[] selectedObjects = currentSelection.toArray();
             files = new File[selectedObjects.length];
             for (int i = 0; i < selectedObjects.length; i++) {
-                File file = getResource(selectedObjects[i]);
+                final File file = getResource(selectedObjects[i]);
                 if (file != null && file.isFile()) {
                     files[i] = file;
                     enabled = true;
@@ -93,21 +92,19 @@ public final class FileOpenAction implements IObjectActionDelegate {
         return enabled;
     }
 
-    private File getResource(Object object) {
+    private File getResource(final Object object) {
         if (object instanceof IResource) {
             return ((IResource) object).getLocation().toFile();
         }
         if (object instanceof File) {
             return (File) object;
         }
-        if (object instanceof IAdaptable) {
-            IAdaptable adaptable = (IAdaptable) object;
-
-            IResource resource = adaptable.getAdapter(IResource.class);
+        if (object instanceof final IAdaptable adaptable) {
+            final IResource resource = adaptable.getAdapter(IResource.class);
             if (resource != null) {
                 return resource.getLocation().toFile();
             }
-            File file = adaptable.getAdapter(File.class);
+            final File file = adaptable.getAdapter(File.class);
             if (file != null) {
                 return file;
             }

@@ -52,12 +52,12 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
     private final class MyMenuContributionItem extends ContributionItem {
         MenuItem myMenuItem;
 
-        MyMenuContributionItem(String id) {
+        MyMenuContributionItem(final String id) {
             super(id);
         }
 
         @Override
-        public void fill(Menu parent, int index) {
+        public void fill(final Menu parent, final int index) {
             myMenuItem = new MenuItem(parent, SWT.PUSH, index);
             myMenuItem.setEnabled(false);
 
@@ -65,7 +65,7 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
                 myMenuItem.setText(Texts.EDITOR_SAVE_SELECTION_AS_MENU_ITEM_LABEL);
                 myMenuItem.addSelectionListener(new SelectionAdapter() {
                     @Override
-                    public void widgetSelected(SelectionEvent e) {
+                    public void widgetSelected(final SelectionEvent e) {
                         activeEditor.saveAsToFile(true);
                     }
                 });
@@ -74,8 +74,8 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
                 myMenuItem.addSelectionListener(new SelectionAdapter() {
 
                     @Override
-                    public void widgetSelected(SelectionEvent e) {
-                        Manager manager = activeEditor.getManager();
+                    public void widgetSelected(final SelectionEvent e) {
+                        final Manager manager = activeEditor.getManager();
                         if (manager.isValid()) {
                             activeEditor.getManager().doTrim();
                         }
@@ -88,8 +88,8 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
                 myMenuItem.addSelectionListener(new SelectionAdapter() {
 
                     @Override
-                    public void widgetSelected(SelectionEvent e) {
-                        Manager manager = activeEditor.getManager();
+                    public void widgetSelected(final SelectionEvent e) {
+                        final Manager manager = activeEditor.getManager();
                         if (manager.isValid()) {
                             manager.doSelectBlock();
                         }
@@ -104,10 +104,10 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
         }
 
         @Override
-        public void menuAboutToShow(IMenuManager menu) {
-            boolean textSelected = activeEditor.getManager().isTextSelected();
-            boolean lengthModifiable = textSelected && !activeEditor.getManager().isOverwriteMode();
-            boolean filled = activeEditor.getManager().isFilled();
+        public void menuAboutToShow(final IMenuManager menu) {
+            final boolean textSelected = activeEditor.getManager().isTextSelected();
+            final boolean lengthModifiable = textSelected && !activeEditor.getManager().isOverwriteMode();
+            final boolean filled = activeEditor.getManager().isFilled();
 
             MenuItem menuItem = getMenuItem(IWorkbenchActionConstants.M_FILE, MenuIds.SAVE_SELECTION_AS);
             if (menuItem != null) {
@@ -123,10 +123,10 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
             }
         }
 
-        private MenuItem getMenuItem(String prefix, String menuId) {
-            IActionBars bars = getActionBars();
+        private MenuItem getMenuItem(final String prefix, final String menuId) {
+            final IActionBars bars = getActionBars();
 
-            IContributionItem contributionItem = bars.getMenuManager().findUsingPath(prefix + '/' + menuId);
+            final IContributionItem contributionItem = bars.getMenuManager().findUsingPath(prefix + '/' + menuId);
             if (contributionItem != null && ((MyMenuContributionItem) contributionItem).myMenuItem != null
                     && !((MyMenuContributionItem) contributionItem).myMenuItem.isDisposed()) {
                 return ((MyMenuContributionItem) contributionItem).myMenuItem;
@@ -136,12 +136,12 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
     }
 
     private final class MyStatusLineContributionItem extends ContributionItem {
-        MyStatusLineContributionItem(String id) {
+        MyStatusLineContributionItem(final String id) {
             super(id);
         }
 
         @Override
-        public void fill(Composite parent) {
+        public void fill(final Composite parent) {
             if (activeEditor != null) {
                 activeEditor.getManager().createStatusPart(parent, true);
             }
@@ -170,9 +170,9 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
      * @see EditorActionBarContributor#contributeToMenu(org.eclipse.jface.action.IMenuManager)
      */
     @Override
-    public void contributeToMenu(IMenuManager menuManager) {
+    public void contributeToMenu(final IMenuManager menuManager) {
         IMenuManager menu = menuManager.findMenuUsingPath(IWorkbenchActionConstants.M_FILE);
-        IMenuListener myMenuListener = new MyMenuListener();
+        final IMenuListener myMenuListener = new MyMenuListener();
         if (menu != null) {
             menu.insertAfter(MenuIds.SAVE_AS, new MyMenuContributionItem(MenuIds.SAVE_SELECTION_AS));
             menu.addMenuListener(myMenuListener);
@@ -192,7 +192,7 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 
         menu = menuManager.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
         if (menu != null) {
-            Action goToAction = new Action() {
+            final Action goToAction = new Action() {
 
                 @Override
                 public boolean isEnabled() {
@@ -218,7 +218,7 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
      * @see EditorActionBarContributor#contributeToStatusLine(org.eclipse.jface.action.IStatusLineManager)
      */
     @Override
-    public void contributeToStatusLine(IStatusLineManager statusLineManager) {
+    public void contributeToStatusLine(final IStatusLineManager statusLineManager) {
         statusLineManager.add(new MyStatusLineContributionItem(STATUS_LINE_ITEM_ID));
     }
 
@@ -226,10 +226,10 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
      * @see IEditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart)
      */
     @Override
-    public void setActiveEditor(IEditorPart targetEditor) {
+    public void setActiveEditor(final IEditorPart targetEditor) {
         if (targetEditor instanceof HexEditor) {
             if (activeEditor != null) {
-                Manager manager = ((HexEditor) targetEditor).getManager();
+                final Manager manager = ((HexEditor) targetEditor).getManager();
                 manager.reuseStatusLinelFrom(activeEditor.getManager());
             }
             activeEditor = (HexEditor) targetEditor;

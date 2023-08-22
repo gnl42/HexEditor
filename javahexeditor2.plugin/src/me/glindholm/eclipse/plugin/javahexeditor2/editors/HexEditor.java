@@ -46,7 +46,6 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -57,8 +56,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -75,7 +72,6 @@ import org.osgi.framework.BundleException;
 
 import me.glindholm.eclipse.plugin.javahexeditor2.BinaryContent;
 import me.glindholm.eclipse.plugin.javahexeditor2.BinaryContent.RangeSelection;
-import me.glindholm.eclipse.plugin.javahexeditor2.FileToucher;
 import me.glindholm.eclipse.plugin.javahexeditor2.HexEditorPlugin;
 import me.glindholm.eclipse.plugin.javahexeditor2.HexTexts;
 import me.glindholm.eclipse.plugin.javahexeditor2.Manager;
@@ -87,10 +83,10 @@ import me.glindholm.eclipse.plugin.javahexeditor2.common.TextUtility;
 public final class HexEditor extends EditorPart implements ISelectionProvider {
 
     private static class MyAction extends Action {
-        private Manager manager;
-        private String myId;
+        private final Manager manager;
+        private final String myId;
 
-        public MyAction(Manager manager, String id) {
+        public MyAction(final Manager manager, final String id) {
             if (manager == null) {
                 throw new IllegalArgumentException("Parameter 'manager' must not be null.");
             }
@@ -142,52 +138,47 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
     private HexTexts hexTexts;
 
     public HexEditor() {
-        super();
-        manager = new Manager(new FileToucher() {
+        manager = new Manager((contentFile, monitor) -> {
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-            @Override
-            public void touchFile(File contentFile, IProgressMonitor monitor) throws IOException {
-                IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-                Path p = new Path(contentFile.getAbsolutePath());
-                IWorkspaceRoot r = workspace.getRoot();
-                IFile file = r.getFileForLocation(p);
-                if (file != null && file.exists()) {
-                    try {
-                        file.appendContents(new ByteArrayInputStream(new byte[0]), true, true, monitor);
-                    } catch (CoreException ex) {
-                        throw new IOException(
-                                TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_READ_FROM_SAVED_FILE, contentFile.getAbsolutePath(), ex.getMessage()));
-                    }
-
+            final Path p = new Path(contentFile.getAbsolutePath());
+            final IWorkspaceRoot r = workspace.getRoot();
+            final IFile file = r.getFileForLocation(p);
+            if (file != null && file.exists()) {
+                try {
+                    file.appendContents(new ByteArrayInputStream(new byte[0]), true, true, monitor);
+                } catch (final CoreException ex) {
+                    throw new IOException(
+                            TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_READ_FROM_SAVED_FILE, contentFile.getAbsolutePath(), ex.getMessage()));
                 }
+
             }
         });
-        ;
+
     }
 
     @Override
-    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+    public void addSelectionChangedListener(final ISelectionChangedListener listener) {
         if (listener == null) {
             return;
         }
 
         if (selectionListeners == null) {
-            selectionListeners = new HashSet<ISelectionChangedListener>();
+            selectionListeners = new HashSet<>();
         }
         selectionListeners.add(listener);
     }
 
     @Override
-    public void createPartControl(Composite parent) {
+    public void createPartControl(final Composite parent) {
 
         statusLineManager = getEditorSite().getActionBars().getStatusLineManager();
 
-        HexEditorPlugin plugin = HexEditorPlugin.getDefault();
+        final HexEditorPlugin plugin = HexEditorPlugin.getDefault();
         getManager().setTextFont(HexEditorPreferences.getFontData());
         manager.setFindReplaceHistory(plugin.getFindReplaceHistory());
         hexTexts = manager.createEditorPart(parent);
-        FillLayout fillLayout = new FillLayout();
+        final FillLayout fillLayout = new FillLayout();
         parent.setLayout(fillLayout);
 
         // Free previously allocated temporary resources.
@@ -198,7 +189,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
         try {
             hexEditorInput.open(getEditorInput());
             manager.openFile(hexEditorInput.getContentFile(), hexEditorInput.getCharset());
-        } catch (CoreException ex) {
+        } catch (final CoreException ex) {
             HexEditorPlugin.getDefault().getLog().log(ex.getStatus());
             statusLineManager.setErrorMessage(ex.getMessage());
         }
@@ -206,7 +197,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
         setPartName(hexEditorInput.getInputName());
 
         // Register any global actions with the site's IActionBars.
-        IActionBars bars = getEditorSite().getActionBars();
+        final IActionBars bars = getEditorSite().getActionBars();
         String id = ActionFactory.UNDO.getId();
         bars.setGlobalActionHandler(id, new MyAction(manager, id));
         id = ActionFactory.REDO.getId();
@@ -224,39 +215,33 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
         id = ActionFactory.FIND.getId();
         bars.setGlobalActionHandler(id, new MyAction(manager, id));
 
-        manager.addListener(new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-                firePropertyChange(PROP_DIRTY);
-                updateActionsStatus();
-            }
+        manager.addListener(event -> {
+            firePropertyChange(PROP_DIRTY);
+            updateActionsStatus();
         });
 
         bars.updateActionBars();
 
-        preferencesChangeListener = new IPropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                if (Preferences.FONT_DATA.equals(event.getProperty())) {
-                    manager.setTextFont((FontData) event.getNewValue());
-                }
+        preferencesChangeListener = event -> {
+            if (Preferences.FONT_DATA.equals(event.getProperty())) {
+                manager.setTextFont((FontData) event.getNewValue());
             }
         };
-        IPreferenceStore store = plugin.getPreferenceStore();
+        final IPreferenceStore store = plugin.getPreferenceStore();
         store.addPropertyChangeListener(preferencesChangeListener);
 
         manager.addLongSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 Log.trace(this, "Long selection: {0}", e);
                 if (selectionListeners == null) {
                     return;
                 }
 
-                long[] longSelection = manager.getLongSelection(e);
-                SelectionChangedEvent event = new SelectionChangedEvent(HexEditor.this,
+                final long[] longSelection = manager.getLongSelection(e);
+                final SelectionChangedEvent event = new SelectionChangedEvent(HexEditor.this,
                         new StructuredSelection(new Object[] { Long.valueOf(longSelection[0]), Long.valueOf(longSelection[1]) }));
-                for (ISelectionChangedListener listener : selectionListeners) {
+                for (final ISelectionChangedListener listener : selectionListeners) {
                     listener.selectionChanged(event);
                 }
             }
@@ -266,7 +251,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
     @Override
     public void dispose() {
-        IPreferenceStore store = HexEditorPlugin.getDefault().getPreferenceStore();
+        final IPreferenceStore store = HexEditorPlugin.getDefault().getPreferenceStore();
         if (preferencesChangeListener != null) {
             store.removePropertyChangeListener(preferencesChangeListener);
         }
@@ -279,8 +264,8 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
     }
 
     @Override
-    public void doSave(IProgressMonitor monitor) {
-        File file = getManager().getContentFile();
+    public void doSave(final IProgressMonitor monitor) {
+        final File file = getManager().getContentFile();
         if (file == null) {
             doSaveAs();
         } else {
@@ -295,7 +280,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
     @SuppressWarnings("unchecked") // for return (T) result;
     @Override
-    public <T> T getAdapter(Class<T> required) {
+    public <T> T getAdapter(final Class<T> required) {
         Object result = null;
         if (IContentOutlinePage.class.isAssignableFrom(required)) {
             if (outlinePage == null) {
@@ -322,38 +307,38 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
     }
 
     IContentOutlinePage getOutlinePage() {
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint(OUTLINE_ID);
+        final IExtensionRegistry registry = Platform.getExtensionRegistry();
+        final IExtensionPoint point = registry.getExtensionPoint(OUTLINE_ID);
         if (point == null) {
             return null;
         }
 
-        IExtension[] extensions = point.getExtensions();
+        final IExtension[] extensions = point.getExtensions();
         if (extensions.length == 0) {
             return null;
         }
-        IConfigurationElement[] elements = extensions[0].getConfigurationElements();
+        final IConfigurationElement[] elements = extensions[0].getConfigurationElements();
         String className = null;
-        for (int i = 0; i < elements.length; ++i) {
-            if (OUTLINE_ELEMENT_NAME.equals(elements[i].getName())) {
-                className = elements[i].getAttribute(OUTLINE_ELEMENT_ATTRIBUTE_CLASS);
+        for (final IConfigurationElement element : elements) {
+            if (OUTLINE_ELEMENT_NAME.equals(element.getName())) {
+                className = element.getAttribute(OUTLINE_ELEMENT_ATTRIBUTE_CLASS);
                 break;
             }
         }
 
-        Bundle aBundle = Platform.getBundle(extensions[0].getNamespaceIdentifier());
+        final Bundle aBundle = Platform.getBundle(extensions[0].getNamespaceIdentifier());
         IContentOutlinePage result = null;
         if (aBundle != null) {
             try {
                 aBundle.start();
-            } catch (BundleException e) {
+            } catch (final BundleException e) {
                 return null;
             }
             try {
                 // throws IllegalAccessException, InstantiationException,
                 // ClassNotFoundException
                 result = (IContentOutlinePage) aBundle.loadClass(className).getConstructor().newInstance();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 return null;
             }
         }
@@ -363,17 +348,17 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
     @Override
     public ISelection getSelection() {
-        RangeSelection rangeSelection = getManager().getSelection();
+        final RangeSelection rangeSelection = getManager().getSelection();
         return new StructuredSelection(new Object[] { Long.valueOf(rangeSelection.start), Long.valueOf(rangeSelection.end) });
     }
 
     @Override
-    public void init(IEditorSite site, final IEditorInput input) throws PartInitException {
+    public void init(final IEditorSite site, final IEditorInput input) throws PartInitException {
         Log.trace(this, "init starts with selection provider {0}", site.getSelectionProvider());
 
         setSite(site);
-        if (!(input instanceof IPathEditorInput) && !(input instanceof ILocationProvider) && (!(input instanceof IURIEditorInput))
-                && (!(input instanceof IStorageEditorInput))) {
+        if (!(input instanceof IPathEditorInput) && !(input instanceof ILocationProvider) && !(input instanceof IURIEditorInput)
+                && !(input instanceof IStorageEditorInput)) {
             throw new PartInitException("Input '" + input.toString() + "'is not a file"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         setInput(input);
@@ -398,7 +383,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
     }
 
     @Override
-    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+    public void removeSelectionChangedListener(final ISelectionChangedListener listener) {
         if (selectionListeners != null) {
             selectionListeners.remove(listener);
         }
@@ -410,23 +395,16 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
             return;
         }
 
-        IRunnableWithProgress runnable = new IRunnableWithProgress() {
-            @Override
-            public void run(IProgressMonitor monitor) {
-                saveToFile(file, selection, monitor);
-            }
-        };
-        ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getEditorSite().getShell());
+        final IRunnableWithProgress runnable = monitor -> saveToFile(file, selection, monitor);
+        final ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getEditorSite().getShell());
         try {
             monitorDialog.run(false, false, runnable);
-        } catch (InvocationTargetException ex) {
-            throw new RuntimeException(ex);
-        } catch (InterruptedException ex) {
+        } catch (final InvocationTargetException | InterruptedException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    void saveToFile(File file, boolean selection, IProgressMonitor monitor) {
+    void saveToFile(final File file, final boolean selection, final IProgressMonitor monitor) {
         monitor.beginTask(Texts.EDITOR_MESSAGE_SAVING_FILE_PLEASE_WAIT, IProgressMonitor.UNKNOWN);
         try {
             if (selection) {
@@ -434,7 +412,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
             } else {
                 manager.saveAsFile(file, monitor);
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             monitor.setCanceled(true);
             monitor.done();
             statusLineManager.setErrorMessage(ex.getMessage());
@@ -457,13 +435,13 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
     }
 
     @Override
-    public void setSelection(ISelection selection) {
+    public void setSelection(final ISelection selection) {
         if (selection.isEmpty()) {
             return;
         }
-        StructuredSelection aSelection = (StructuredSelection) selection;
+        final StructuredSelection aSelection = (StructuredSelection) selection;
         long[] startEnd = (long[]) aSelection.getFirstElement();
-        long start = startEnd[0];
+        final long start = startEnd[0];
         long end = start;
         if (startEnd.length > 1) {
             end = startEnd[1];
@@ -483,10 +461,10 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
      * and whether inserting or overwriting is active. Undo/redo actions are enabled/disabled as well.
      */
     void updateActionsStatus() {
-        boolean textSelected = getManager().isTextSelected();
-        boolean lengthModifiable = textSelected && !manager.isOverwriteMode();
-        boolean filled = getManager().isFilled();
-        IActionBars bars = getEditorSite().getActionBars();
+        final boolean textSelected = getManager().isTextSelected();
+        final boolean lengthModifiable = textSelected && !manager.isOverwriteMode();
+        final boolean filled = getManager().isFilled();
+        final IActionBars bars = getEditorSite().getActionBars();
         IAction action = bars.getGlobalActionHandler(ActionFactory.UNDO.getId());
         if (action != null) {
             action.setEnabled(manager.canUndo());

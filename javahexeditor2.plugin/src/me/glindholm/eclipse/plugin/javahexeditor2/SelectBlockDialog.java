@@ -57,8 +57,8 @@ final class SelectBlockDialog extends Dialog {
         }
 
         @Override
-        public void modifyText(ModifyEvent e) {
-            String newText = ((Text) e.widget).getText();
+        public void modifyText(final ModifyEvent e) {
+            final String newText = ((Text) e.widget).getText();
             result = NumberUtility.parseString(hexRadioButton.getSelection(), newText);
             empty = newText.isEmpty();
             validateResults();
@@ -90,7 +90,7 @@ final class SelectBlockDialog extends Dialog {
 
     SelectionAdapter defaultSelectionAdapter = new SelectionAdapter() {
         @Override
-        public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+        public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
             startText.setFocus();
         }
     };
@@ -102,7 +102,7 @@ final class SelectBlockDialog extends Dialog {
     String lastEndText;
     private long limit = -1L;
 
-    public SelectBlockDialog(Shell aShell) {
+    public SelectBlockDialog(final Shell aShell) {
         super(aShell);
         lastStartText = Texts.EMPTY;
         lastEndText = Texts.EMPTY;
@@ -115,9 +115,9 @@ final class SelectBlockDialog extends Dialog {
         compositeRadio = new Composite(shell, SWT.NONE);
         compositeRadio.setLayout(new GridLayout());
 
-        SelectionAdapter hexTextSelectionAdapter = new SelectionAdapter() {
+        final SelectionAdapter hexTextSelectionAdapter = new SelectionAdapter() {
             @Override
-            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
                 startText.setText(startText.getText()); // generate event
                 endText.setText(endText.getText()); // generate event
                 lastHexButtonSelected = e.widget == hexRadioButton;
@@ -167,9 +167,9 @@ final class SelectBlockDialog extends Dialog {
         compositeTexts.setLayout(new GridLayout(2, false));
 
         startText = new Text(compositeTexts, SWT.BORDER | SWT.SINGLE);
-        GridData gridData_startText = new GridData(SWT.FILL, SWT.CENTER, true, true);
+        final GridData gridData_startText = new GridData(SWT.FILL, SWT.CENTER, true, true);
         startText.setTextLimit(30);
-        int columns = 35;
+        final int columns = 35;
         GC gc = new GC(startText);
         int width = (int) (columns * SWTUtility.getAverageCharacterWidth(gc));
         gc.dispose();
@@ -179,7 +179,7 @@ final class SelectBlockDialog extends Dialog {
         startText.addModifyListener(startTextListener);
 
         endText = new Text(compositeTexts, SWT.BORDER | SWT.SINGLE);
-        GridData gridData_endText = new GridData(SWT.FILL, SWT.CENTER, true, true);
+        final GridData gridData_endText = new GridData(SWT.FILL, SWT.CENTER, true, true);
         endText.setTextLimit(30);
         gc = new GC(endText);
         width = (int) (columns * SWTUtility.getAverageCharacterWidth(gc));
@@ -204,7 +204,7 @@ final class SelectBlockDialog extends Dialog {
         button.addSelectionListener(defaultSelectionAdapter);
         button.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
             @Override
-            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
                 lastStartText = startText.getText();
                 finalStartResult = startTextListener.getResult();
                 lastEndText = endText.getText();
@@ -220,7 +220,7 @@ final class SelectBlockDialog extends Dialog {
         button1.setText(Texts.BUTTON_CLOSE_LABEL);
         button1.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
             @Override
-            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            public void widgetSelected(final org.eclipse.swt.events.SelectionEvent e) {
                 shell.close();
             }
         });
@@ -246,7 +246,7 @@ final class SelectBlockDialog extends Dialog {
         statusLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
     }
 
-    public boolean open(Shell parentShell, RangeSelection rangeSelection, long aLimit) {
+    public boolean open(final Shell parentShell, final RangeSelection rangeSelection, final long aLimit) {
         if (rangeSelection == null) {
             throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
         }
@@ -279,7 +279,7 @@ final class SelectBlockDialog extends Dialog {
         startText.selectAll();
         startText.setFocus();
         shell.open();
-        Display display = getParent().getDisplay();
+        final Display display = getParent().getDisplay();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
@@ -290,16 +290,16 @@ final class SelectBlockDialog extends Dialog {
     }
 
     public void validateResults() {
-        long result1 = startTextListener.getResult();
-        long result2 = endTextListener.getResult();
-        if ((result1 >= 0L) && (result1 <= limit) && (result2 >= 0L) && (result2 <= limit) && (result2 > result1)) {
+        final long result1 = startTextListener.getResult();
+        final long result2 = endTextListener.getResult();
+        if (result1 >= 0L && result1 <= limit && result2 >= 0L && result2 <= limit && result2 > result1) {
             button.setEnabled(true);
             statusLabel.setText(Texts.EMPTY);
         } else {
             button.setEnabled(false);
             if (startTextListener.isEmpty() || endTextListener.isEmpty()) {
                 statusLabel.setText(Texts.EMPTY);
-            } else if ((result1 < 0) || (result2 < 0)) {
+            } else if (result1 < 0 || result2 < 0) {
                 statusLabel.setText(Texts.DIALOG_ERROR_NOT_A_NUMBER_MESSAGE);
             } else if (result2 <= result1) {
                 statusLabel.setText(Texts.DIALOG_ERROR_END_SMALLER_THAN_OR_EQUAL_TO_START_MESSAGE);

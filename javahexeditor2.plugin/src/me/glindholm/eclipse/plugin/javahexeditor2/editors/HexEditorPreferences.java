@@ -35,10 +35,10 @@ public final class HexEditorPreferences {
      * @return Font data to be used by plugin editors, not <code>null</code>.
      */
     public static FontData getFontData() {
-        IPreferenceStore store = HexEditorPlugin.getDefault().getPreferenceStore();
-        String name = store.getString(Preferences.FONT_NAME);
-        int style = store.getInt(Preferences.FONT_STYLE);
-        int size = store.getInt(Preferences.FONT_SIZE);
+        final IPreferenceStore store = HexEditorPlugin.getDefault().getPreferenceStore();
+        final String name = store.getString(Preferences.FONT_NAME);
+        final int style = store.getInt(Preferences.FONT_STYLE);
+        final int size = store.getInt(Preferences.FONT_SIZE);
         FontData fontData = null;
         if (name != null && !name.isEmpty() && size > 0) {
             fontData = new FontData(name, size, style);
