@@ -41,7 +41,7 @@ public final class HexTextsTest {
         content.dispose();
         hexTexts.dispose();
         shell.dispose();
-        display.dispose();
+        display.close();
     }
 
     /*

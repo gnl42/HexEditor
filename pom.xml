@@ -8,7 +8,7 @@
 	<version>0.6.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
-		<tycho.version>4.0.1</tycho.version>
+		<tycho.version>4.0.2</tycho.version>
 		<sonar.exclusions>**/src-gen/**</sonar.exclusions>
 		<env.ui.test>-Xms512m -Xmx2048m</env.ui.test>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -308,11 +308,11 @@
 		</plugins>
 	</build>
 	<modules>
+		<module>javahexeditor2.targetplatform</module>
 		<module>javahexeditor2.plugin</module>
-<!--		<module>javahexeditor2.test</module>--> <!-- Fails when run as a JUnit Plugin Test ???-->
+		<module>javahexeditor2.test</module>
 		<module>javahexeditor2.feature</module>
 		<module>javahexeditor2.p2</module>
-		<module>javahexeditor2.product</module>
-		<module>javahexeditor2.targetplatform</module>
+<!--		<module>javahexeditor2.product</module>-->
 	</modules>
 </project>

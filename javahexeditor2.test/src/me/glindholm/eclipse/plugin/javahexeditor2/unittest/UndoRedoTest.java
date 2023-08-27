@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public final class UndoRedoTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        content = new BinaryContent(new File(getClass().getResource(AllTests.resourceData).getPath()));
+        content = new BinaryContent(TestUtilities.getDataFile(TestUtilities.resourceData));
         content.insert(ByteBuffer.wrap(new byte[] { 88, 77, 66 }), 128L);
         content.setActionsHistory();
         data = ByteBuffer.allocate(8);
@@ -390,8 +389,8 @@ public final class UndoRedoTest {
 
     public void testBlockInsert() {
         try {
-            content.insert(new File(getClass().getResource(AllTests.resourceData).getPath()), 127L);
-            content.insert(new File(getClass().getResource(AllTests.resourceUnicode).getPath()), 383L);
+            content.insert(TestUtilities.getDataFile(TestUtilities.resourceData), 127L);
+            content.insert(TestUtilities.getDataFile(TestUtilities.resourceUnicode), 383L);
             assertTrue(content.canUndo());
             assertFalse(content.canRedo());
 
@@ -854,7 +853,7 @@ public final class UndoRedoTest {
     public void testRangesModified() {
         try {
             final List<Long> rangesModified = new ArrayList<>();
-            content = new BinaryContent(new File(getClass().getResource(AllTests.resourceData).getPath()));
+            content = new BinaryContent(TestUtilities.getDataFile(TestUtilities.resourceData));
             content.setActionsHistory();
             content.overwrite((byte) 99, 128L); // 127, 99, 129
             content.undo();

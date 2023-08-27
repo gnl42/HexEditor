@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
    <feature url="me.glindholm.eclipse.plugin.javahexeditor2.feature_0.6.0.qualifier.jar" id="me.glindholm.eclipse.plugin.javahexeditor2.feature" version="0.6.0.qualifier">
-      <category name="Java Hex Editor"/>
+      <category name="Java Hex Editor2"/>
    </feature>
    <feature url="me.glindholm.eclipse.plugin.javahexeditor2.feature.source_0.6.0.qualifier.jar" id="me.glindholm.eclipse.plugin.javahexeditor2.feature.source" version="0.6.0.qualifier">
-      <category name="Java Hex Editor Source"/>
+      <category name="Java Hex Editor2 Source"/>
    </feature>
-   <category-def name="Java Hex Editor" label="Java Hex Editor">
+   <category-def name="Java Hex Editor2" label="Java Hex Editor2">
       <description>
-         Java Hex Editor
+         Java Hex Editor2
       </description>
    </category-def>
 </site>

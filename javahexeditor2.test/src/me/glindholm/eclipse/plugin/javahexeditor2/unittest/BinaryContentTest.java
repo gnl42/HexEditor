@@ -51,7 +51,7 @@ public final class BinaryContentTest {
 //
     @BeforeEach
     public void setUp() throws Exception {
-        content = new BinaryContent(new File(getClass().getResource(AllTests.resourceData).getPath()));
+        content = new BinaryContent(TestUtilities.getDataFile(TestUtilities.resourceData));
         data = ByteBuffer.allocate(8);
     }
 
@@ -69,14 +69,14 @@ public final class BinaryContentTest {
                 fail("Test not appropriate for current setup. Update test.");
             }
 
-            final File longFile = AllTests.setUpLongData(length * 3);
+            final File longFile = TestUtilities.setUpLongData(length * 3);
             final BinaryContent longContent = new BinaryContent(longFile);
             final File file = File.createTempFile("JavaHexEditor", ".tmp");
             longContent.get(file);
             assertEquals(longFile.length(), file.length());
             longContent.dispose();
             file.deleteOnExit();
-            AllTests.tearDownLongData();
+            TestUtilities.tearDownLongData();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

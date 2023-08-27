@@ -44,8 +44,8 @@ public final class FinderTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        content = new BinaryContent(new File(getClass().getResource(AllTests.resourceData).getPath()));
-        final File longFile = AllTests.setUpLongData(bufferSize + 1); // MapSize + 1
+        content = new BinaryContent(TestUtilities.getDataFile(TestUtilities.resourceData));
+        final File longFile = TestUtilities.setUpLongData(bufferSize + 1); // MapSize + 1
         longContent = new BinaryContent(longFile);
     }
 
@@ -53,7 +53,7 @@ public final class FinderTest {
     public void tearDown() throws Exception {
         content.dispose();
         longContent.dispose();
-        AllTests.tearDownLongData();
+        TestUtilities.tearDownLongData();
     }
 
     private Match getNextMatch(final BinaryContentFinder finder) {
@@ -128,7 +128,7 @@ public final class FinderTest {
 
         BinaryContent content3;
         try {
-            content3 = new BinaryContent(new File(getClass().getResource(AllTests.resourceUnicode).getPath()));
+            content3 = new BinaryContent(TestUtilities.getDataFile(TestUtilities.resourceUnicode));
         } catch (final IOException ex) {
             throw new RuntimeException(ex);
         }

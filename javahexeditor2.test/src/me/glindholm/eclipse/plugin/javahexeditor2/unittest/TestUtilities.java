@@ -24,32 +24,41 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import org.eclipse.core.runtime.FileLocator;
+
 import me.glindholm.eclipse.plugin.javahexeditor2.RandomAccessFileFactory;
 
-public class AllTests {
+public class TestUtilities {
 
     static final String resourceData = "TestsData.hex";
     static final String resourceLongData = "TestsLongData.hex";
     static final String resourceUnicode = "TestsUnicode.hex";
 
 //	public static void main(String[] args) {
-//		junit.textui.TestRunner.run(AllTests.suite());
+//		junit.textui.TestRunner.run(TestUtilities.suite());
 //	}
+
+    public static File getDataFile(final String filename) throws IOException {
+        File configFile = new File(FileLocator.toFileURL(TestUtilities.class.getResource(filename)).getPath());
+        return configFile;
+
+    }
 
     /**
      * Helper method that creates a long test file
      *
      * @param size
      * @return a test file of size size or null on error
+     * @throws IOException
      */
-    public static File setUpLongData(final long size) {
-        final File longFile = new File(AllTests.class.getResource(resourceLongData).getPath());
+    public static File setUpLongData(final long size) throws IOException {
+        File longFile = getDataFile(resourceLongData);
         try {
             final RandomAccessFile file = RandomAccessFileFactory.createRandomAccessFile(longFile, "rws");
             file.setLength(size);
             file.close();
         } catch (final IOException e) {
-
+            System.err.println("Unable to find " + resourceLongData);
             return null;
         }
 
@@ -78,8 +87,10 @@ public class AllTests {
 
     /**
      * Helper method to tear down the file created in setUpLongData()
+     *
+     * @throws IOException
      */
-    public static void tearDownLongData() {
+    public static void tearDownLongData() throws IOException {
         setUpLongData(0);
     }
 }

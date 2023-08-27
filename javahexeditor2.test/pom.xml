@@ -18,8 +18,6 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
 					<skip>${test.component.skip}</skip>
-					<useUIHarness>false</useUIHarness>
-					<useUIThread>false</useUIThread>
 				</configuration>
 			</plugin>
 		</plugins>
