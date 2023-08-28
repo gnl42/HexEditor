@@ -12,11 +12,21 @@
 		<sonar.exclusions>**/src-gen/**</sonar.exclusions>
 		<env.ui.test>-Xms512m -Xmx2048m</env.ui.test>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Required properties for releasing -->
+		<github-update-repo>
+			git@github.com:gnl42/javahexeditor2-update.git</github-update-repo>
+		<github-local-clone>${project.build.directory}/checkout</github-local-clone>
+		<releases-directory>${github-local-clone}/releases</releases-directory>
+		<current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
+		<!-- The label for the Composite sites -->
+		<site.label>javahexeditor2-update</site.label>
+		<eclipse.version>2023-06</eclipse.version>
 	</properties>
 	<repositories>
 		<repository>
 			<id>eclipse</id>
-			<url>https://download.eclipse.org/releases/latest</url>
+			<url>https://download.eclipse.org/releases/${eclipse.version}</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
@@ -37,10 +47,9 @@
 	</contributors>
 
 
-
 	<issueManagement>
-    	<url>https://github.com/gnl42/javahexeditor2/issues</url>
-  	</issueManagement>
+		<url>https://github.com/gnl42/javahexeditor2/issues</url>
+	</issueManagement>
 
 	<build>
 		<pluginManagement>
@@ -141,6 +150,11 @@
 					<artifactId>target-platform-configuration</artifactId>
 					<version>${tycho.version}</version>
 				</plugin>
+	            <plugin>
+	                <groupId>org.eclipse.tycho.extras</groupId>
+	                <artifactId>tycho-eclipserun-plugin</artifactId>
+				    <version>${tycho.version}</version>
+				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho.extras</groupId>
 					<artifactId>tycho-pack200a-plugin</artifactId>
@@ -183,6 +197,17 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-repository-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.1.0</version>
+
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -313,6 +338,34 @@
 		<module>javahexeditor2.test</module>
 		<module>javahexeditor2.feature</module>
 		<module>javahexeditor2.p2</module>
-<!--		<module>javahexeditor2.product</module>-->
+		<!--		<module>javahexeditor2.product</module>-->
 	</modules>
+
+	<profiles>
+		<profile>
+			<!-- Activate this profile to perform the release to GitHub Pages -->
+			<id>release-composite</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<artifactId>maven-install-plugin</artifactId>
+							<executions>
+								<execution>
+									<id>default-install</id>
+									<phase>none</phase>
+								</execution>
+							</executions>
+						</plugin>
+						<plugin>
+							<artifactId>maven-deploy-plugin</artifactId>
+							<configuration>
+								<skip>true</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 </project>

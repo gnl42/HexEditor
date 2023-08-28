@@ -34,10 +34,6 @@ public class TestUtilities {
     static final String resourceLongData = "TestsLongData.hex";
     static final String resourceUnicode = "TestsUnicode.hex";
 
-//	public static void main(String[] args) {
-//		junit.textui.TestRunner.run(TestUtilities.suite());
-//	}
-
     public static File getDataFile(final String filename) throws IOException {
         File configFile = new File(FileLocator.toFileURL(TestUtilities.class.getResource(filename)).getPath());
         return configFile;
@@ -64,26 +60,6 @@ public class TestUtilities {
 
         return longFile;
     }
-
-//	public static Test suite() {
-//		TestSuite suite = new TestSuite("Test for me.glindholm.eclipse.plugin.javahexeditor2");
-//
-//		// Note: gcj 4.4.0 won't let to memory-map twice the same file in the same
-//		// virtual machine.
-//		// BinaryContentTest and FinderTest both map TestsLongData.hex so if run
-//		// from gcj the test
-//		// crashes. Workaround: test first one, then the other.
-//		// Plus file TestsLongData.hex should be with length 0.
-//		// Plus gcc with text junit give an initializer exception (can be
-//		// ignored).
-//		// $JUnit-BEGIN$
-//		suite.addTestSuite(BinaryContentTest.class);
-//		suite.addTestSuite(HexTextsTest.class);
-//		suite.addTestSuite(UndoRedoTest.class);
-//		suite.addTestSuite(FinderTest.class);
-//		// $JUnit-END$
-//		return suite;
-//	}
 
     /**
      * Helper method to tear down the file created in setUpLongData()
