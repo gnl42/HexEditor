@@ -2,7 +2,7 @@
 <feature
       id="me.glindholm.eclipse.plugin.javahexeditor2.feature"
       label="Java Hex Editor"
-      version="0.6.0.qualifier"
+      version="0.7.0.qualifier"
       provider-name="Jordi Bergenthal, Andre Bossert, Peter Dell, Andrey Loskutov, George Lindholm"
       plugin="me.glindholm.eclipse.plugin.javahexeditor2">
 

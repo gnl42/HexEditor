@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>me.glindholm.eclipse.plugin</groupId>
 		<artifactId>javahexeditor2</artifactId>
-		<version>0.6.0-SNAPSHOT</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>me.glindholm.eclipse.plugin.javahexeditor2.p2</artifactId>
 	<packaging>eclipse-repository</packaging>

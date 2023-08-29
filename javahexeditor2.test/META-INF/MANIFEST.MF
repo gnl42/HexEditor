@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: me.glindholm.eclipse.plugin.javahexeditor2.test
 Bundle-Vendor: George Lindholm
 Bundle-SymbolicName: me.glindholm.eclipse.plugin.javahexeditor2.test
-Bundle-Version: 0.6.0.qualifier
+Bundle-Version: 0.7.0.qualifier
 Import-Package: org.eclipse.swt,
  org.eclipse.swt.custom,
  org.eclipse.swt.widgets
