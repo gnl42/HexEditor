@@ -41,14 +41,6 @@ public final class BinaryContentTest {
     private BinaryContent content;
     private ByteBuffer data;
 
-//	public static void main(String[] args) {
-//		junit.textui.TestRunner.run(BinaryContentTest.class);
-//	}
-//
-//	public BinaryContentTest(String name) {
-//		super(name);
-//	}
-//
     @BeforeEach
     public void setUp() throws Exception {
         content = new BinaryContent(TestUtilities.getDataFile(TestUtilities.resourceData));
