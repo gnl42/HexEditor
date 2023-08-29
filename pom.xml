@@ -46,6 +46,12 @@
 		</contributor>
 	</contributors>
 
+	<developers>
+		<developer>
+			<name>George Lindholm</name>
+			<organization>self</organization>
+		</developer>
+	</developers>
 
 	<issueManagement>
 		<url>https://github.com/gnl42/javahexeditor2/issues</url>
