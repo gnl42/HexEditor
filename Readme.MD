@@ -1,14 +1,3 @@
+# javahexeditor2
 
-Description of the project
-
-TODO:
- - the licence should be defined
-
-==Structure of the projet==
-
-* javahexeditor2.plugin :
-* javahexeditor2.feature :
-* javahexeditor2.p2 :
-* javahexeditor2.product :
-* javahexeditor2.targetplatform :
-* javahexeditor2.test :
+A fork of https://sourceforge.net/projects/javahexeditor for Eclipse 2023-06 and later
